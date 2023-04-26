@@ -1,0 +1,22 @@
+import { dbConnection } from "../sql";
+import { defineEventHandler } from "h3";
+
+export default defineEventHandler(async (e) => {
+  const conn = await dbConnection;
+  try {
+    const [rows, fields] = await conn.execute(selectLatestRecord);
+    return JSON.stringify(rows);
+  } catch (e) {
+    console.log(e);
+    return "";
+  } finally {
+    await conn.end();
+  }
+});
+
+const selectLatestRecord = `
+  SELECT * FROM matchinfo_test
+  ORDER BY id
+  DESC
+  LIMIT 5;
+`;
