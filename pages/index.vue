@@ -1,12 +1,5 @@
-<template>
-  <h1>test</h1>
-  <input type="file" @change="uploadFile" />
-  <br />
-  <button @click="send">test</button>
-</template>
-
 <script lang="ts" setup>
-import { ref, Ref } from "vue";
+import { ref, Ref, reactive } from "vue";
 const text: Ref<any> = ref("");
 
 const uploadFile = (e: any) => {
@@ -26,4 +19,17 @@ const send = async () => {
     },
   });
 };
+
+const get = async () => {
+  const { data } = await useFetch("/api/sql/match");
+  console.log(reactive(data.value));
+};
 </script>
+
+<template>
+  <h1>test</h1>
+  <input type="file" @change="uploadFile" />
+  <br />
+  <button @click="send">test</button>
+  <button @click="get">select</button>
+</template>
