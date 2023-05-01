@@ -9,8 +9,6 @@ export default defineEventHandler(async (e) => {
   } catch (e) {
     console.log(e);
     return "";
-  } finally {
-    await conn.end();
   }
 });
 

@@ -1,4 +1,5 @@
 export interface matchInfo {
+  uuid?: number;
   name: string;
   round: string;
   startBoard: string;
