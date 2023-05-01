@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ref, Ref, reactive } from "vue";
+import { ref, Ref } from "vue";
+import { matchInfo } from "../types/matchInfo";
+import { boardRecord } from "../types/boardRecord";
+
 const text: Ref<any> = ref("");
 
 const uploadFile = (e: any) => {
@@ -12,24 +15,41 @@ const uploadFile = (e: any) => {
 };
 
 const send = async () => {
+  console.log("eve");
   const { data: res } = await useFetch("/api/upload-hands", {
     method: "GET",
-    query: {
+    body: {
       contents: text.value,
     },
   });
 };
 
-const get = async () => {
+const recentMatchData: Ref<matchInfo[]> = ref([]);
+async function getRecentMatchData() {
   const { data } = await useFetch("/api/sql/match");
-  console.log(reactive(data.value));
-};
+  recentMatchData.value = JSON.parse(data.value);
+}
+
+const findBoardSetByMatchId: Ref<boardRecord[]> = ref([]);
+async function getBoardData(uuid) {
+  const { data } = await useFetch("/api/sql/get-board-data", {
+    method: "POST",
+    body: {
+      uuid: uuid,
+    },
+  });
+  findBoardSetByMatchId.value = JSON.parse(data.value);
+}
 </script>
 
 <template>
   <h1>test</h1>
   <input type="file" @change="uploadFile" />
   <br />
+  <div v-for="data in recentMatchData">
+    <button @click="getBoardData(data.uuid)">{{ data.name }}</button>
+  </div>
+
   <button @click="send">test</button>
-  <button @click="get">select</button>
+  <button @click="getRecentMatchData">get</button>
 </template>
