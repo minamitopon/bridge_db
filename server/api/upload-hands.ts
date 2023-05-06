@@ -1,13 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
-import { boardRecord } from "../../types/boardRecord";
 import { matchInfo } from "../../types/matchInfo";
 import insertDb from "./insert-db";
-import { defineEventHandler } from "h3";
+import { defineEventHandler, readBody } from "h3";
 
-export default defineEventHandler((event) => {
-  const url = event.node.req.url;
-  if (!url) return;
-  const contents = pickContents(url);
+export default defineEventHandler(async (event) => {
+  const query = await readBody(event);
+  const contents = query.contents.replace(/\r?\n|nt\|(.*?)pg\|\|/g, "");
+  if (!contents) return;
 
   const uuid = uuidv4();
   const matchInfo = parseMatchInfo(contents);
@@ -16,14 +15,6 @@ export default defineEventHandler((event) => {
   insertDb(matchInfo, boardRecord, uuid);
   return;
 });
-
-const pickContents = (url: string) => {
-  const reg = /.*?contents=/g;
-  const contents = url.replace(reg, "");
-  return contents;
-};
-
-const analyzeUrlParams = (contents: string) => {};
 
 const parseMatchInfo = (lin: string) => {
   const reg = /vg\|[^|]*|/g;
@@ -51,61 +42,63 @@ const matchRecord = (lin: string) => {
   return matchInfoArray;
 };
 
-const parseBoardRecord = (lin: string) => {
-  const boardRecord: boardRecord[] = [];
+const parseBoardRecord = (lin) => {
   const matchRecordArray = matchRecord(lin);
   // ボードセット情報
   const firstBoard = Number(matchRecordArray?.[3]);
   const lastBoard = Number(matchRecordArray?.[4]);
   const totalBoards = lastBoard - firstBoard + 1;
+  const allBoardArray = createBoardNumArray(firstBoard, totalBoards);
 
-  const boardNumArray = new Array(totalBoards * 2)
-    .fill(firstBoard)
-    .map((b, i) => b + i);
-  const allBoardArray = boardNumArray.concat(boardNumArray).sort();
+  const regForRecords = /qx(.*?)(?=qx)|qx(.*?)$/gs;
+  const boardRecord = lin
+    .replace(/\r?\n|nt\|(.*?)pg\|\|/g, "")
+    .match(regForRecords);
 
+  const records: any = [];
+  boardRecord?.forEach((record, index) => {
+    const rec = {
+      boardNum: allBoardArray[index],
+      roomId: index % 2 ? "c" : "o",
+      ...generateBoardRecord(record),
+    };
+    records.push(rec);
+  });
+
+  return records;
+};
+
+const createBoardNumArray = (start, length) => {
+  let arr: number[] = [];
+  for (let i = 0; i < length; i++) {
+    const num: number = start + i;
+    arr.push(num);
+    arr.push(num);
+  }
+  return arr;
+};
+
+const generateBoardRecord = (record) => {
   // ハンド情報
-  const regForHand = /md\|[^|]*\|/g;
-  const handArray = lin.match(regForHand);
+  const regForHand = /(?<=md\|)(.+?)(?=\|sv)/g;
+  const handArray = record.match(regForHand)?.[0];
 
   // オークション情報
-  const regForAuction = /mb\|(.*?)\|pc/g;
-  const auctionArray = lin.match(regForAuction);
+  const regForAuction = /(?<=mb\|)(.+?)(?=\|pc)/g;
+  const auctionArray = record.match(regForAuction)?.[0];
 
   // バル状況
-  const vulnerability = [
-    "e",
-    "o",
-    "n",
-    "e",
-    "b",
-    "n",
-    "e",
-    "b",
-    "o",
-    "e",
-    "b",
-    "o",
-    "n",
-    "b",
-    "o",
-    "n",
-  ];
+  const regForVulnerability = /(?<=sv\|)(.+?)(?=\|mb)/gs;
+  const vulnerabilityArray = record.match(regForVulnerability)?.[0];
 
   // プレイ情報
-  const regForPlay = /pc\|(.*?)(mc|pg\|\|%0D%0Apg)/g;
-  const playArray = lin.match(regForPlay);
+  const regForPlay = /(?<=pc\|)(.+?)(?=mc|pg\|\|pg)/gs;
+  const playArray = record.match(regForPlay)?.[0];
 
-  for (let i = 0; i < totalBoards * 2; i++) {
-    const boardInfo: boardRecord = {
-      boardNum: allBoardArray[i],
-      vul: vulnerability[allBoardArray[i] % 16],
-      roomId: i % 2 ? "c" : "o",
-      auction: auctionArray?.[i],
-      hands: handArray?.[i],
-      play: playArray?.[i],
-    };
-    boardRecord.push(boardInfo);
-  }
-  return boardRecord;
+  return {
+    vul: vulnerabilityArray,
+    auction: auctionArray,
+    hands: handArray,
+    play: playArray,
+  };
 };
