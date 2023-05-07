@@ -15,9 +15,8 @@ const uploadFile = (e: any) => {
 };
 
 const send = async () => {
-  console.log("eve");
   const { data: res } = await useFetch("/api/upload-hands", {
-    method: "GET",
+    method: "POST",
     body: {
       contents: text.value,
     },

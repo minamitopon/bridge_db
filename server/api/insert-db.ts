@@ -7,11 +7,20 @@ export default async (
   boardRecord: boardRecord[],
   uuid: string
 ) => {
-  (await dbConnection).execute(generateQueryOfInsertMatchInfo(matchInfo, uuid));
-  for (let record of boardRecord) {
-    (await dbConnection).execute(generateQueryOfInsertBoardInfo(record, uuid));
+  const conn = await dbConnection;
+
+  try {
+    const [rows, fields] = await conn.execute(
+      generateQueryOfInsertMatchInfo(matchInfo, uuid)
+    );
+    for (let record of boardRecord) {
+      await conn.execute(generateQueryOfInsertBoardInfo(record, uuid));
+    }
+    return;
+  } catch (e) {
+    console.log(e);
+    return "";
   }
-  (await dbConnection).end();
 };
 
 const generateQueryOfInsertMatchInfo = (matchInfo: matchInfo, uuid: string) => {
