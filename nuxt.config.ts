@@ -14,6 +14,27 @@ export default defineNuxtConfig({
           exclude: /(node_modules)/,
         });
       }
+      if (isClient) {
+        config.module.rules.push({
+          test: /\.pug$/,
+          loader: "pug-plain-loader",
+        });
+      }
     },
+  },
+  modules: ["@element-plus/nuxt"],
+  components: [
+    {
+      path: "~/components/",
+      pathPrefix: false,
+    },
+  ],
+  vite: {
+    css: {
+      preprocessorOptions: {},
+    },
+  },
+  vueCompilerOptions: {
+    plugins: ["@volar/vue-language-plugin-pug"],
   },
 });

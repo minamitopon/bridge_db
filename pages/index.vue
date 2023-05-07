@@ -1,8 +1,4 @@
 <script lang="ts" setup>
-import { ref, Ref } from "vue";
-import { matchInfo } from "../types/matchInfo";
-import { boardRecord } from "../types/boardRecord";
-
 const text: Ref<any> = ref("");
 
 const uploadFile = (e: any) => {
@@ -39,16 +35,23 @@ async function getBoardData(uuid) {
   });
   findBoardSetByMatchId.value = JSON.parse(data.value);
 }
+
+function click(val) {
+  console.log(val);
+}
 </script>
 
-<template>
-  <h1>test</h1>
-  <input type="file" @change="uploadFile" />
-  <br />
-  <div v-for="data in recentMatchData">
-    <button @click="getBoardData(data.uuid)">{{ data.name }}</button>
-  </div>
+<template lang="pug">
+.top
+  input(type="file" @change="uploadFile")
+  br
+  div(v-for="data in recentMatchData")
+    button(@click="getBoardData(data.uuid)")
+      | {{ data.name }}
 
-  <button @click="send">test</button>
-  <button @click="getRecentMatchData">get</button>
+  button(@click="send")
+    | test
+  button(@click="getRecentMatchData")
+    | get
+  atom-common-input(input-size="m" @clickSearch="click")
 </template>
