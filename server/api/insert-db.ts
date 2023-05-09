@@ -29,6 +29,7 @@ const generateQueryOfInsertMatchInfo = (matchInfo: matchInfo, uuid: string) => {
       uuid,
       name,
       round,
+      players,
       startBoard,
       lastBoard,
       teamOpen,
@@ -39,6 +40,7 @@ const generateQueryOfInsertMatchInfo = (matchInfo: matchInfo, uuid: string) => {
       '${uuid}',
       '${matchInfo.name}',
       '${matchInfo.round}',
+      '${matchInfo.players}',
       '${matchInfo.startBoard}',
       '${matchInfo.lastBoard}',
       '${matchInfo.teamOpen}',
@@ -57,6 +59,7 @@ const generateQueryOfInsertBoardInfo = (
     INSERT INTO boardinfo_test (
       matchId,
       roomId,
+      players,
       boardNum,
       vul,
       auction,
@@ -65,6 +68,7 @@ const generateQueryOfInsertBoardInfo = (
     ) VALUES (
       '${uuid}',
       '${boardRecord.roomId}',
+      '${boardRecord.players}',
       '${boardRecord.boardNum}',
       '${boardRecord.vul}',
       '${boardRecord.auction}',
