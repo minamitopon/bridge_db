@@ -21,9 +21,11 @@ const parseMatchInfo = (lin: string) => {
   const matchData = lin.match(reg)?.[0].replace(/\+/g, " ");
   if (!matchData) return;
   const matchInfoArray = matchData.split(",");
+  const players = lin.match(/(?<=pn\|)(.+?)(?=\|pg)/g)?.[0];
   const matchInfo: matchInfo = {
     name: matchInfoArray[0].replace(/vg\|/g, ""),
     round: matchInfoArray[1],
+    players: players,
     startBoard: matchInfoArray[3],
     lastBoard: matchInfoArray[4],
     teamOpen: matchInfoArray[5],
@@ -54,12 +56,18 @@ const parseBoardRecord = (lin) => {
   const boardRecord = lin
     .replace(/\r?\n|nt\|(.*?)pg\|\|/g, "")
     .match(regForRecords);
+  // TODO ボードごとのプレイヤー名設定
+  const players = lin.match(/(?<=pn\|)(.+?)(?=\|pg)/g)?.[0].split(",");
+  const openRoomPlayers = players.slice(0, 4);
+  const closedRoomPlayers = players.slice(4);
 
   const records: any = [];
   boardRecord?.forEach((record, index) => {
     const rec = {
       boardNum: allBoardArray[index],
       roomId: index % 2 ? "c" : "o",
+      players:
+        index % 2 ? closedRoomPlayers.toString() : openRoomPlayers.toString(),
       ...generateBoardRecord(record),
     };
     records.push(rec);
