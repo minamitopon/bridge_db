@@ -37,4 +37,6 @@ export default defineNuxtConfig({
   vueCompilerOptions: {
     plugins: ["@volar/vue-language-plugin-pug"],
   },
+  extends: "./.nuxt/tsconfig.json",
+  include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
 });
