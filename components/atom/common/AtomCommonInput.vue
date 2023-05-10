@@ -6,30 +6,34 @@ const input = ref("");
 
 interface Props {
   inputSize: "s" | "m" | "l";
+  modelValue: string;
 }
 const Props = withDefaults(defineProps<Props>(), {
   inputSize: "m",
 });
 
 interface Emits {
-  (e: "clickSearch", key: string): void;
+  (e: "update:modelValue", key: string): void;
 }
 const emits = defineEmits<Emits>();
-
-const clickSearch = () => {
-  emits("clickSearch", input.value);
-};
 
 const modifierClass = computed(() => {
   return `input--${Props.inputSize}`;
 });
+
+const inputKey = (e) => {
+  const target = e.target as HTMLInputElement;
+  emits("update:modelValue", target.value);
+};
 </script>
 
 <template lang="pug">
-.input(:class="modifierClass")
-  el-input(v-model="input" placeholder="search")
-    template(#prepend)
-      el-button(:icon="Search" @click="clickSearch")
+input(
+  :value="modelValue"
+  @input="inputKey"
+  :class="modifierClass"
+  placeholder="search"
+)
 </template>
 
 <style lang="sass">
