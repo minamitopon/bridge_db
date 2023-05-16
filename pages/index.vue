@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const text: Ref<any> = ref("");
+const title = "プレイヤー名";
 
 const uploadFile = (e: any) => {
   const file = e.target.files[0];
@@ -58,5 +59,10 @@ async function search(val) {
     | test
   button(@click="getRecentMatchData")
     | get
-  atom-common-input(input-size="m" v-model="searchKey")
+  atom-common-label(
+    :title="title"
+    bold
+  )
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="searchKey")
 </template>
