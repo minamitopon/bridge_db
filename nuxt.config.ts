@@ -2,7 +2,6 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
     strict: true,
-    typeCheck: true,
   },
   build: {
     extend(config, { isDev, isClient }) {
@@ -39,4 +38,5 @@ export default defineNuxtConfig({
   },
   extends: "./.nuxt/tsconfig.json",
   include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
+  css: ["~/public/styles/main.scss"],
 });
