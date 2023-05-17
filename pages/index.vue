@@ -65,4 +65,5 @@ async function search(val) {
   )
     template(v-slot:contents)
       atom-common-input(input-size="m" v-model="searchKey")
+      atom-common-button(size="s" label="test")
 </template>
