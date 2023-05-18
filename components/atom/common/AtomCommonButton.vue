@@ -32,15 +32,26 @@ const buttonColor = computed(() => {
     ? "#ffd97a"
     : "#5a7c7b";
 });
+
+interface Emits {
+  (e: "click"): void;
+}
+const emits = defineEmits<Emits>();
+const onClick = () => {
+  emits("click");
+};
 </script>
 
 <template lang="pug">
-el-button(
+el-button.atom-common-button(
   :size="buttonSize"
   :color="buttonColor"
-  :plain="plain"
+  :disable="disable"
+  @click="onClick"
 )
   | {{ label }}
 </template>
 
-<style lang="sass"></style>
+<style lang="sass">
+.atom-common-button
+</style>
