@@ -59,10 +59,4 @@ async function search(val) {
     | test
   button(@click="getRecentMatchData")
     | get
-  atom-common-label(
-    :title="title"
-    bold
-  )
-    template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="searchKey")
 </template>
