@@ -24,7 +24,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src/**/*", "./nuxt.config.ts"],
+  "include": ["./src/**/*", "./nuxt.config.ts", "stories/**/*.vue", "env.d.ts"],
   "exclude": ["node_modules"],
   "extends": "./.nuxt/tsconfig.json"
 }

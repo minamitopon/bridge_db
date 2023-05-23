@@ -51,7 +51,3 @@ el-button.atom-common-button(
 )
   | {{ label }}
 </template>
-
-<style lang="sass">
-.atom-common-button
-</style>
