@@ -7,5 +7,6 @@ async function search(query) {
 <template lang="pug">
 .search
   am-common-inner(inner-size="m")
-    og-search(@search="search")
+    template(v-slot:content)
+      og-search(@search="search")
 </template>

@@ -21,7 +21,7 @@ const modifierClass = computed(() => {
 
 <template lang="pug">
 .am-common-inner(:class="modifierClass")
-  slot
+  slot(name="content")
 </template>
 
 <style lang="sass">
