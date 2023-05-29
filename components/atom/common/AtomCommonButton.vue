@@ -48,10 +48,7 @@ el-button.atom-common-button(
   :color="buttonColor"
   :disable="disable"
   @click="onClick"
+  :plain="plain"
 )
   | {{ label }}
 </template>
-
-<style lang="sass">
-.atom-common-button
-</style>
