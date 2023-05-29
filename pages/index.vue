@@ -43,7 +43,10 @@ async function search(val) {
     method: "GET",
     query: { val },
   });
-  console.log(data.value);
+}
+
+async function searchByConditions(query) {
+  console.log(query);
 }
 </script>
 
@@ -59,4 +62,7 @@ async function search(val) {
     | test
   button(@click="getRecentMatchData")
     | get
+  og-search(
+    @search="searchByConditions"
+  )
 </template>
