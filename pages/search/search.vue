@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 async function search(query) {
-  const { data } = await useFetch("/api/sql/search/search-by-query", {
+  const { data: res } = await useFetch("/api/sql/search/search-match", {
     method: "POST",
     body: {
-      query: query,
+      contents: query,
     },
   });
 }
