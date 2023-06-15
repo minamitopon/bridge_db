@@ -1,12 +1,23 @@
 <script lang="ts" setup>
+import { ref, computed } from "vue";
+import { type matchRecord } from "../../types/front/index";
+
+const defaultMatchRecordArray: matchRecord[] = [];
+const tableContents = ref(defaultMatchRecordArray);
+
 async function search(query) {
-  const { data: res } = await useFetch("/api/sql/search/search-match", {
+  const { data: result } = await useFetch("/api/sql/search/search-match", {
     method: "POST",
     body: {
       contents: query,
     },
   });
+  tableContents.value = JSON.parse(result.value);
 }
+
+const cols = computed(() => {
+  return ["auto", "80px", "auto", "120px", "120px"];
+});
 </script>
 
 <template lang="pug">
@@ -14,4 +25,33 @@ async function search(query) {
   am-common-inner(inner-size="m")
     template(v-slot:content)
       og-search(@search="search")
+  am-common-inner(inner-size="m")
+    template(v-slot:content)
+      am-common-table(fixed)
+        colgroup
+          col(v-for="col in cols" :width="col")
+        thead
+          am-common-table-row
+            am-common-table-header-cell
+              | 試合名
+            am-common-table-header-cell
+              | ラウンド
+            am-common-table-header-cell
+              | プレイヤー
+            am-common-table-header-cell
+              | チーム１
+            am-common-table-header-cell
+              | チーム２
+        tbody
+          am-common-table-row(v-for="match in tableContents")
+            am-common-table-cell
+              | {{ match.name }}
+            am-common-table-cell
+              | {{ match.round }}
+            am-common-table-cell
+              | {{ match.players }}
+            am-common-table-cell
+              | {{ match.teamOpen }}
+            am-common-table-cell
+              | {{ match.teamClose }}
 </template>
