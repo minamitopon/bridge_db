@@ -4,6 +4,8 @@ export default defineNuxtConfig({
     strict: true,
   },
   build: {
+    mode: "development",
+    devtools: true,
     extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
@@ -39,4 +41,5 @@ export default defineNuxtConfig({
   extends: "./.nuxt/tsconfig.json",
   include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
   css: ["~/public/styles/main.scss"],
+  buildModules: ["@pinia/nuxt"],
 });

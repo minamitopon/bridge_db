@@ -1,18 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { type matchRecord } from "../../types/front/index";
+import { useMatchRecordStore } from "../../stores/matchRecord/matchRecord";
+import pinia from "../../stores/index";
 
 const defaultMatchRecordArray: matchRecord[] = [];
-const tableContents = ref(defaultMatchRecordArray);
 
-async function search(query) {
-  const { data: result } = await useFetch("/api/sql/search/search-match", {
-    method: "POST",
-    body: {
-      contents: query,
-    },
-  });
-  tableContents.value = JSON.parse(result.value);
+async function search(conditions) {
+  const store = useMatchRecordStore(pinia());
+  await store.searchRecord(conditions);
 }
 
 const cols = computed(() => {
@@ -22,7 +18,7 @@ const cols = computed(() => {
 
 <template lang="pug">
 .search
-  am-common-inner(inner-size="m")
+  am-common-inner
     template(v-slot:content)
       og-search(@search="search")
   am-common-inner(inner-size="m")
