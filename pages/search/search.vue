@@ -5,14 +5,18 @@ import { useMatchRecordStore } from "../../stores/matchRecord/matchRecord";
 import pinia from "../../stores/index";
 
 const defaultMatchRecordArray: matchRecord[] = [];
+const store = useMatchRecordStore(pinia());
 
 async function search(conditions) {
-  const store = useMatchRecordStore(pinia());
   await store.searchRecord(conditions);
 }
 
 const cols = computed(() => {
   return ["auto", "80px", "auto", "120px", "120px"];
+});
+
+const row = computed(() => {
+  return store.getNarrowedRecord;
 });
 </script>
 
@@ -39,7 +43,7 @@ const cols = computed(() => {
             am-common-table-header-cell
               | チーム２
         tbody
-          am-common-table-row(v-for="match in tableContents")
+          am-common-table-row(v-for="match in row")
             am-common-table-cell
               | {{ match.name }}
             am-common-table-cell
