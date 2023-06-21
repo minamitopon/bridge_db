@@ -17,13 +17,21 @@
   "dependencies": {
     "@element-plus/nuxt": "^1.0.4",
     "@nuxtjs/composition-api": "^0.33.1",
+    "@pinia/nuxt": "^0.4.11",
     "@supabase/supabase-js": "^2.12.1",
+    "@unhead/vue": "^1.1.27",
     "@volar/vue-language-plugin-pug": "^1.6.4",
     "element-plus": "^2.3.4",
     "mysql2": "^3.2.0",
+    "pinia": "^2.1.4",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "uuid": "^9.0.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.2",
     "vue-tsc": "^1.2.0"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
