@@ -6,6 +6,14 @@ export interface searchQuery {
   hands: string;
 }
 
+export interface handKeyword {
+  spades: string;
+  hearts: string;
+  diamonds: string;
+  clubs: string;
+  hands: string;
+}
+
 export type matchRecord = {
   id: number;
   uuid: string;

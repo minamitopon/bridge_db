@@ -9,7 +9,7 @@ const items = [
 ];
 
 const isActive = (path) => {
-  return route.path.includes(path);
+  return route.path === path;
 };
 </script>
 

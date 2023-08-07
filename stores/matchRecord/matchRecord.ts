@@ -14,6 +14,7 @@ export interface interfaceOfMatchRecordGetters
 
 export interface interfaceOfMatchRecordActions {
   searchRecord: (any) => any;
+  getAllRecords: () => any;
 }
 
 export const useMatchRecordStore = defineStore<
@@ -43,6 +44,10 @@ export const useMatchRecordStore = defineStore<
         },
       });
       this.narrowedRecord = JSON.parse(result.value);
+    },
+    async getAllRecords() {
+      const { data: result } = await useFetch("/api/match-record");
+      this.allMatchRecords = result.value;
     },
   },
 });

@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+import { type Ref, ref, computed, onMounted } from "vue";
+import { useMatchRecordStore } from "../stores/matchRecord/matchRecord";
+import pinia from "../stores/index";
+const store = useMatchRecordStore(pinia());
+
 const text: Ref<any> = ref("");
 const title = "プレイヤー名";
 
@@ -20,49 +25,24 @@ const send = async () => {
   });
 };
 
-const recentMatchData: Ref<matchInfo[]> = ref([]);
-async function getRecentMatchData() {
-  const { data } = await useFetch("/api/sql/match");
-  recentMatchData.value = JSON.parse(data.value);
-}
+async function searchByConditions(query) {}
 
-const findBoardSetByMatchId: Ref<boardRecord[]> = ref([]);
-async function getBoardData(uuid) {
-  const { data } = await useFetch("/api/sql/get-board-data", {
-    method: "POST",
-    body: {
-      uuid: uuid,
-    },
-  });
-  findBoardSetByMatchId.value = JSON.parse(data.value);
+async function created() {
+  await store.getAllRecords();
 }
+created();
 
-const searchKey = ref("");
-async function search(val) {
-  const { data } = await useFetch("/api/sql/search/search-match", {
-    method: "GET",
-    query: { val },
-  });
-}
-
-async function searchByConditions(query) {
-  console.log(query);
-}
+const records = computed(() => {
+  return store.getAllRecord;
+});
 </script>
 
 <template lang="pug">
 .top
   input(type="file" @change="uploadFile")
   br
-  div(v-for="data in recentMatchData")
-    button(@click="getBoardData(data.uuid)")
-      | {{ data.name }}
 
   button(@click="send")
     | test
-  button(@click="getRecentMatchData")
-    | get
-  og-search(
-    @search="searchByConditions"
-  )
+  p {{ records }}
 </template>

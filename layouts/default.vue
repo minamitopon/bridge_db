@@ -2,7 +2,7 @@
 .default-layout
   header.default-layout__header
     | test
-  .default-layout__sidebar
+  client-only.default-layout__sidebar
     og-common-sidebar
   main.default-layout__main
     slot
