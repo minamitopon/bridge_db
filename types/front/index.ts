@@ -20,8 +20,8 @@ export type matchRecord = {
   name: string;
   round: string;
   players: string;
-  startBoarrd: string;
-  lastBoarrd: string;
+  startBoard: string;
+  lastBoard: string;
   teamOpen: string;
   teamOpenImp: string;
   teamClose: string;

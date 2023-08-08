@@ -47,7 +47,7 @@ export const useMatchRecordStore = defineStore<
     },
     async getAllRecords() {
       const { data: result } = await useFetch("/api/match-record");
-      this.allMatchRecords = result.value;
+      this.allMatchRecords = JSON.parse(result.value);
     },
   },
 });

@@ -7,6 +7,8 @@ td.am-common-table-cell
 
 <style lang="sass">
 .am-common-table-cell
+  height: 60px
   border: solid 2px #646464
   padding: 4px 8px
+  word-wrap: break-word
 </style>
