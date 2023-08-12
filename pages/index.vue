@@ -53,6 +53,7 @@ const cols = computed(() => {
 
   button(@click="send")
     | test
+
   am-common-inner(inner-size="l")
     template(v-slot:content)
       am-common-table
@@ -82,4 +83,8 @@ const cols = computed(() => {
               | {{ record.teamOpen }}
             am-common-table-cell
               | {{ record.teamClose }}
+  mc-common-paging(
+    :current="1"
+    :total="classedRecords.length"
+  )
 </template>

@@ -1,18 +1,29 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { type imgOptions } from "../../../types/front/index";
 
 interface Props {
   size: "s" | "m" | "l";
-  color: "spade" | "heart" | "diamond" | "club";
-  label: string;
-  disable: boolean;
-  plain: boolean;
+  color?: "spade" | "heart" | "diamond" | "club";
+  label?: string;
+  disable?: boolean;
+  plain?: boolean;
+  icon?: string;
+  width?: number;
+  height?: number;
+  styleOption?: imgOptions;
 }
 
 const Props = withDefaults(defineProps<Props>(), {
   color: "club",
   plain: true,
   disable: false,
+});
+
+const modifierClass = computed(() => {
+  return {
+    "atom-common-button__with-icon": Props.icon,
+  };
 });
 
 const buttonSize = computed(() => {
@@ -33,6 +44,10 @@ const buttonColor = computed(() => {
     : "#5a7c7b";
 });
 
+const buttonSvg = computed(() => {
+  return `/images/svg/${Props.icon}.svg`;
+});
+
 interface Emits {
   (e: "click"): void;
 }
@@ -49,6 +64,23 @@ el-button.atom-common-button(
   :disable="disable"
   @click="onClick"
   :plain="plain"
+  :class="modifierClass"
 )
-  | {{ label }}
+  template(v-if="icon")
+    am-common-img(
+      :src="buttonSvg"
+      :width="width"
+      :height="height"
+      :style="styleOption"
+    )
+  template(v-else)
+    span
+      | {{ label }}
 </template>
+
+<style lang="sass">
+.atom-common-button
+  &.atom-common-button__with-icon
+    border: none
+    background: none
+</style>

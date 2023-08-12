@@ -27,3 +27,7 @@ export type matchRecord = {
   teamClose: string;
   teamCloseImp: string;
 };
+
+export type imgOptions = {
+  rotate?: number;
+};
