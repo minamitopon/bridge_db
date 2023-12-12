@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { type matchRecord } from "../../types/front/index";
 import { useMatchRecordStore } from "../../stores/matchRecord/matchRecord";
@@ -54,4 +54,4 @@ const row = computed(() => {
               | {{ match.teamOpen }}
             am-common-table-cell
               | {{ match.teamClose }}
-</template>
+</template> -->

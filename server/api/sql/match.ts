@@ -13,8 +13,8 @@ export default defineEventHandler(async (e) => {
 });
 
 const selectLatestRecord = `
-  SELECT * FROM matchinfo_test
+  SELECT * FROM matches
   ORDER BY id
   DESC
-  LIMIT 5;
+  LIMIT 100;
 `;

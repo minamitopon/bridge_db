@@ -1,24 +1,20 @@
 <script lang="ts" setup>
-import { reactive } from "vue";
-let handKeyword = reactive({});
-const updateHandKeyword = (key) => {
-  handKeyword = key;
-};
+import { ref } from "vue";
+const conditon = ref("");
 interface Emits {
-  (e: "search", query: {}): void;
+  (e: "search", conditon: String): void;
 }
 const emits = defineEmits<Emits>();
 const search = () => {
-  console.log("cl");
-  emits("search", handKeyword);
+  emits("search", conditon.value);
 };
 </script>
 
 <template lang="pug">
 .og-search
-  mc-search-hands(
-    @update:handKeyword="updateHandKeyword"
-  )
+  atom-common-label
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="conditon")
   atom-common-button(
     size="s"
     color="heart"

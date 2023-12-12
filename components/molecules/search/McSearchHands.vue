@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watchEffect, watch } from "vue";
 import { handKeyword } from "../../../types/front";
 
 const spades = ref("");
@@ -12,27 +12,12 @@ interface Emits {
   (e: "update:handKeyword", key: handKeyword): void;
 }
 const emits = defineEmits<Emits>();
-const inputModels = [
-  {
-    title: "スペードの持ち方",
-    model: spades,
-  },
-  {
-    title: "ハートの持ち方",
-    model: hearts.value,
-  },
-  {
-    title: "ダイヤの持ち方",
-    model: diamonds.value,
-  },
-  {
-    title: "クラブの持ち方",
-    model: clubs.value,
-  },
-  {
-    title: "あいまい検索",
-    model: hands.value,
-  },
+const inputTitles = [
+  "スペードの持ち方",
+  "ハートの持ち方",
+  "ダイヤの持ち方",
+  "クラブの持ち方",
+  "あいまい検索",
 ];
 const handKeyword = computed<handKeyword>(() => {
   return {
@@ -51,12 +36,43 @@ watchEffect(() => {
 <template lang="pug">
 .molecules-search-hands
   atom-common-label(
-    v-for="model in inputModels"
-    :title="model.title"
+    :title="inputTitles[0]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="model.model")
+      atom-common-input(input-size="m" v-model="spades")
+  atom-common-label(
+    :title="inputTitles[1]"
+    bold
+    font-size="m"
+    label-position="left"
+  )
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="hearts")
+  atom-common-label(
+    :title="inputTitles[2]"
+    bold
+    font-size="m"
+    label-position="left"
+  )
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="diamonds")
+  atom-common-label(
+    :title="inputTitles[3]"
+    bold
+    font-size="m"
+    label-position="left"
+  )
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="clubs")
+  atom-common-label(
+    :title="inputTitles[4]"
+    bold
+    font-size="m"
+    label-position="left"
+  )
+    template(v-slot:contents)
+      atom-common-input(input-size="m" v-model="hands")
 </template>
