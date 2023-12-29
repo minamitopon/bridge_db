@@ -1,7 +1,6 @@
 <template lang="pug">
 .default-layout
   header.default-layout__header
-    | test
   client-only.default-layout__sidebar
     og-common-sidebar
   main.default-layout__main

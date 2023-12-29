@@ -1,15 +1,20 @@
 import { defineStore } from "pinia";
 export const useMatchesStore = defineStore("matches", {
   state: () => ({
-    data: null,
+    data: [],
   }),
   getters: {
-    data: (state) => state.data,
+    getData: (state) => state.data,
   },
   actions: {
     async fetch() {
-      const { data: result } = await useFetch("api/sql/match");
-      this.data = result;
+      try {
+        const res = await fetch("/api/sql/match");
+        const json = await res.json();
+        this.data = json;
+      } catch (e) {
+        throw new Error(e);
+      }
     },
   },
 });

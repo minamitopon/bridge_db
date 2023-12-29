@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   modules: ["@element-plus/nuxt"],
   pinia: {
     autoImports: ["defineStore", "storeToRefs"],
+    storesDirs: ["./stores/**"],
   },
   components: [
     {
