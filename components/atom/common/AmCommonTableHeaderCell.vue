@@ -7,7 +7,7 @@ th.am-common-table-header-cell
 
 <style lang="sass">
 .am-common-table-header-cell
-	background: #5a7c7b
+	background: $main-green
 	font-weight: bold
 	color: #fff
 	border: solid 2px #646464

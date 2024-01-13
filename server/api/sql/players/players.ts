@@ -1,4 +1,4 @@
-import { dbConnection } from "../sql";
+import { dbConnection } from "../../sql";
 import { defineEventHandler } from "h3";
 
 export default defineEventHandler(async (e) => {
@@ -14,8 +14,5 @@ export default defineEventHandler(async (e) => {
 });
 
 const selectLatestRecord = `
-  SELECT * FROM matches
-  ORDER BY id
-  DESC
-  LIMIT 100;
+  SELECT * FROM players;
 `;

@@ -36,7 +36,11 @@ export default defineNuxtConfig({
   ],
   vite: {
     css: {
-      preprocessorOptions: {},
+      preprocessorOptions: {
+        sass: {
+          additionalData: '@import "~/public/styles/_default.sass"',
+        },
+      },
     },
   },
   vueCompilerOptions: {
@@ -44,6 +48,6 @@ export default defineNuxtConfig({
   },
   extends: "./.nuxt/tsconfig.json",
   include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
-  css: ["~/public/styles/main.scss"],
+  // css: ["~/public/styles/main.sass"],
   buildModules: ["@pinia/nuxt"],
 });
