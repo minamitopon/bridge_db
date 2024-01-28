@@ -2,13 +2,15 @@
 import { onMounted } from "vue";
 import pinia from "../stores/index";
 import { useMatchesStore } from "../stores/matchRecord/matchRecord";
+import { usePlayersStore } from "../stores/players/players";
 
-const store = useMatchesStore(pinia());
+const matchesStore = useMatchesStore(pinia());
+const playersStore = usePlayersStore(pinia());
 
-onMounted(async () => {
-  await store.fetch();
+onMounted(() => {
+  Promise.all([matchesStore.fetch(), playersStore.fetch()]);
 });
-const vugraph = ref(store?.data);
+const vugraph = ref(matchesStore?.data);
 const handleClick = (uuid) => {
   console.log(uuid);
 };
