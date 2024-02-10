@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
+import { Match } from "../../types/front/matchRecord";
+
 export const useMatchesStore = defineStore("matches", {
   state: () => ({
-    data: [],
+    data: [] as Match[],
   }),
   getters: {
     getData: (state) => state.data,

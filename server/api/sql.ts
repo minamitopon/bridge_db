@@ -6,4 +6,5 @@ export const dbConnection = mysql.createPool({
   user: "root",
   password: "pass",
   database: "boardDB",
+  // namedPlaceholders: true,
 });

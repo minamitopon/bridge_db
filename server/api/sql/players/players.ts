@@ -1,24 +1,20 @@
 import { dbConnection } from "../../sql";
-import { defineEventHandler, getQuery } from "h3";
+import { defineEventHandler, readBody } from "h3";
+import mysql from "mysql2/promise";
 
 export default defineEventHandler(async (e) => {
-  const query = await getQuery(e);
-  const uuid = query.uuid;
-  const conn = await dbConnection;
-
   try {
-    const [rows, fields] = await conn.execute(generateQuery(uuid));
-    return JSON.stringify(rows);
+    const body = await readBody(e);
+    const conditions = body.map((uuid) => `'${uuid}'`);
+
+    const statement = `
+    SELECT * FROM players
+    WHERE uuid IN (${conditions});
+    `;
+    const conn = await dbConnection;
+    const [rows, fields] = await conn.execute(statement);
+    return [rows];
   } catch (e) {
-    console.log(e);
-    return "";
+    return new Error(e);
   }
 });
-
-const generateQuery = (uuid) => {
-  return `
-  SELECT * FROM players
-  WHERE uuid = '${uuid}'
-  LIMIT 1;
-`;
-};

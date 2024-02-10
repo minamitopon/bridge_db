@@ -1,16 +1,50 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import {
+  onMounted,
+  computed,
+  reactive,
+  ref,
+  watchEffect,
+  watch,
+  type Ref,
+} from "vue";
 import pinia from "../stores/index";
 import { useMatchesStore } from "../stores/matchRecord/matchRecord";
 import { usePlayersStore } from "../stores/players/players";
+import { useProgressStore } from "../stores/progress/index";
+import { type Match } from "../types/front/matchRecord";
+
+import { matchRecord } from "../model/matchRecord";
 
 const matchesStore = useMatchesStore(pinia());
 const playersStore = usePlayersStore(pinia());
+const progressStore = useProgressStore(pinia());
 
 onMounted(() => {
-  Promise.all([matchesStore.fetch(), playersStore.fetch()]);
+  Promise.all([matchesStore.fetch()]);
 });
-const vugraph = ref(matchesStore?.data);
+const uuidsInView: Ref<string[]> = ref([]);
+const matchData = computed(() => reactive(matchesStore.getData));
+
+watchEffect(() => {
+  uuidsInView.value = matchData.value.map((d) => d.uuid);
+});
+watch(
+  () => [...uuidsInView.value],
+  async (n, p) => {
+    const players = await playersStore.fetchByUuids(uuidsInView.value);
+  }
+);
+
+const vugraph = computed(() => {
+  const matchData: Match[] = reactive(matchesStore.getData);
+  matchData.map((data) => {
+    const players = ref(playersStore.findByUuid(data.uuid));
+    return;
+  });
+  return matchData;
+});
+
 const handleClick = (uuid) => {
   console.log(uuid);
 };
@@ -18,12 +52,13 @@ const handleClick = (uuid) => {
 
 <template lang="pug">
 .archive
+  p {{ uuidsInView }}
   .archive__search
     og-search
   .archive__table
     am-common-inner(inner-size="m")
       template(v-slot:content)
-        am-common-table(fixed)
+        am-common-table(fixed v-if="vugraph")
           colgroup
             col(v-for="col in cols" :width="col")
           thead

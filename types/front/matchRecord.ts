@@ -2,21 +2,21 @@ export interface Match {
   id: number;
   uuid: string;
   name: string;
-  teamOpen: string;
-  teamClose: string;
+  team_open: string;
+  team_close: string;
 }
 
 export interface MatchPlayers {
   id: number;
   uuid: string;
-  northOpen: string;
-  eastOpen: string;
-  southOpen: string;
-  westOpen: string;
-  northClose: string;
-  eastClose: string;
-  southClose: string;
-  westClose: string;
+  north_open: string;
+  east_open: string;
+  south_open: string;
+  west_open: string;
+  north_close: string;
+  east_close: string;
+  south_close: string;
+  west_close: string;
 }
 
 export interface MatchProgress {
@@ -25,6 +25,6 @@ export interface MatchProgress {
   round: string;
   startBoard: number;
   lastBoard: number;
-  impOpen: number;
-  impClose: number;
+  imp_open: number;
+  imp_close: number;
 }
