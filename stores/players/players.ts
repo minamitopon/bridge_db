@@ -23,7 +23,7 @@ export const usePlayersStore = defineStore("players", {
           const json = await res.json();
           this.data = json;
 
-          return this.data;
+          return json;
         }
       } catch (e) {
         console.log(e);

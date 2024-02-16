@@ -12,7 +12,10 @@ import pinia from "../stores/index";
 import { useMatchesStore } from "../stores/matchRecord/matchRecord";
 import { usePlayersStore } from "../stores/players/players";
 import { useProgressStore } from "../stores/progress/index";
-import { type Match } from "../types/front/matchRecord";
+
+import { proxyToArray } from "../utils";
+
+import { type Match, type MatchPlayers } from "../types/front/matchRecord";
 
 import { matchRecord } from "../model/matchRecord";
 
@@ -24,23 +27,47 @@ onMounted(() => {
   Promise.all([matchesStore.fetch()]);
 });
 const uuidsInView: Ref<string[]> = ref([]);
+const playersInView: Ref<MatchPlayers[]> = ref([]);
 const matchData = computed(() => reactive(matchesStore.getData));
+const vugraphModel: Ref<any[]> = ref([]);
 
+const sample = {
+  id: 1,
+  uuid: "yerty",
+  round: "1-1",
+  startBoard: 1,
+  lastBoard: 1,
+  imp_open: 1,
+  imp_close: 1,
+};
 watchEffect(() => {
   uuidsInView.value = matchData.value.map((d) => d.uuid);
 });
 watch(
   () => [...uuidsInView.value],
   async (n, p) => {
-    const players = await playersStore.fetchByUuids(uuidsInView.value);
+    playersInView.value = await playersStore.fetchByUuids(uuidsInView.value);
+  }
+);
+watch(
+  () => [...playersInView.value],
+  async (n, p) => {
+    vugraphModel.value = matchData.value.map((data) => {
+      const player = proxyToArray(playersInView.value)[0].find((p) => {
+        return p.uuid === data.uuid;
+      });
+      if (!player) return;
+      return new matchRecord(data, player, sample);
+    });
   }
 );
 
 const vugraph = computed(() => {
   const matchData: Match[] = reactive(matchesStore.getData);
   matchData.map((data) => {
-    const players = ref(playersStore.findByUuid(data.uuid));
-    return;
+    const player = playersInView.value.find((p) => p.uuid === data.uuid);
+    if (!player) return;
+    return new matchRecord(data, player, sample);
   });
   return matchData;
 });
@@ -52,7 +79,6 @@ const handleClick = (uuid) => {
 
 <template lang="pug">
 .archive
-  p {{ uuidsInView }}
   .archive__search
     og-search
   .archive__table
@@ -78,7 +104,7 @@ const handleClick = (uuid) => {
               am-common-table-cell
                 | {{ match.name }}
               am-common-table-cell
-                | {{ match.team_open }}
+                | {{ match.team_close }}
               am-common-table-cell
                 | {{ match.team_close }}
 </template>
