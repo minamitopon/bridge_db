@@ -1,5 +1,4 @@
 export interface Match {
-  id: number;
   uuid: string;
   name: string;
   team_open: string;
@@ -7,7 +6,6 @@ export interface Match {
 }
 
 export interface MatchPlayers {
-  id: number;
   uuid: string;
   north_open: string;
   east_open: string;
@@ -20,7 +18,6 @@ export interface MatchPlayers {
 }
 
 export interface MatchProgress {
-  id: number;
   uuid: string;
   round: string;
   startBoard: number;

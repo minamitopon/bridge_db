@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watchEffect, Ref } from "vue";
-import { searchQuery } from "../../../types/front";
+import { ref, watchEffect, type Ref } from "vue";
 
 const searchWord: Ref<string> = ref("");
 
@@ -21,5 +20,5 @@ watchEffect(() => {
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="matchName")
+      atom-common-input(input-size="m" v-model="searchWord")
 </template>

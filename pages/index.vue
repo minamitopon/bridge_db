@@ -20,6 +20,7 @@ import {
 } from "../types/front/matchRecord";
 import { matchRecord } from "../model/matchRecord";
 
+/** store */
 const matchesStore = useMatchesStore(pinia());
 const playersStore = usePlayersStore(pinia());
 const progressStore = useProgressStore(pinia());
@@ -27,12 +28,17 @@ const progressStore = useProgressStore(pinia());
 onMounted(() => {
   Promise.all([matchesStore.fetch()]);
 });
+
+/** defines */
+const cols = ref(["auto", "100px", "100px", "auto", "auto"]);
 const uuidsInView: Ref<string[]> = ref([]);
 const playersInView: Ref<MatchPlayers[]> = ref([]);
-const matchData = computed(() => reactive(matchesStore.getData));
-const vugraphModel: Ref<any[]> = ref([]);
 const progressInView: Ref<MatchProgress[]> = ref([]);
+const matchData = computed(() => reactive(matchesStore.getData));
+const vugraphModel: Ref<matchRecord[]> = ref([]);
+const searchResult: Ref<matchRecord[]> = ref([]);
 
+/** watch */
 watchEffect(() => {
   uuidsInView.value = matchData.value.map((d) => d.uuid);
 });
@@ -71,17 +77,25 @@ watch(
   }
 );
 
-const cols = ref(["auto", "100px", "100px", "auto", "auto"]);
-
+/** methods */
 const handleClick = (uuid) => {
   console.log(uuid);
+};
+const handleSimpleSearch = async (keyword) => {
+  const { data: result } = await useFetch("/api/sql/search/simple-search", {
+    query: { keyword: keyword },
+  });
+  searchResult.value = result.value;
 };
 </script>
 
 <template lang="pug">
 .archive
   .archive__search
-    og-search
+    og-search(
+      @simple-search="handleSimpleSearch"
+      @detailed-search="handleDetailedSearch"
+    )
   .archive__table
     am-common-inner(inner-size="l")
       template(v-slot:content)
@@ -106,7 +120,7 @@ const handleClick = (uuid) => {
                 | クローズドルーム
           tbody
             am-common-table-row(
-              v-for="match in vugraphModel"
+              v-for="match in searchResult"
               has-event
               @click="handleClick(match.uuid)"
             )
