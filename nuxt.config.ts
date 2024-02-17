@@ -1,3 +1,5 @@
+import vuetify from "vite-plugin-vuetify";
+
 export default defineNuxtConfig({
   typescript: {
     shim: false,
@@ -22,6 +24,7 @@ export default defineNuxtConfig({
         });
       }
     },
+    transpile: ["vuetify"],
   },
   modules: ["@element-plus/nuxt"],
   pinia: {
@@ -42,12 +45,23 @@ export default defineNuxtConfig({
         },
       },
     },
+    ssr: {
+      noExternal: ["vuetify"],
+    },
+    define: {
+      "process.env.DEBUG": false,
+    },
   },
   vueCompilerOptions: {
     plugins: ["@volar/vue-language-plugin-pug"],
   },
   extends: "./.nuxt/tsconfig.json",
   include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
-  // css: ["~/public/styles/main.sass"],
+  css: ["~/assets/main.scss"],
   buildModules: ["@pinia/nuxt"],
+  hooks: {
+    "vite:extendConfig": (config) => {
+      config.plugins!.push(vuetify());
+    },
+  },
 });

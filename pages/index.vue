@@ -71,7 +71,7 @@ watch(
   }
 );
 
-const cols = ref(["auto", "120px", "120px", "auto", "auto"]);
+const cols = ref(["auto", "100px", "100px", "auto", "auto"]);
 
 const handleClick = (uuid) => {
   console.log(uuid);
@@ -83,7 +83,7 @@ const handleClick = (uuid) => {
   .archive__search
     og-search
   .archive__table
-    am-common-inner(inner-size="xl")
+    am-common-inner(inner-size="l")
       template(v-slot:content)
         am-common-table(fixed v-if="vugraphModel")
           colgroup
