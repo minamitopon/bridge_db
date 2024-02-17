@@ -7,9 +7,11 @@ const input = ref("");
 interface Props {
   inputSize: "s" | "m" | "l";
   modelValue: string;
+  placeholder: string;
 }
 const Props = withDefaults(defineProps<Props>(), {
   inputSize: "m",
+  placeholder: "検索ワード",
 });
 
 interface Emits {
@@ -32,7 +34,7 @@ input.atom-common-input(
   :value="modelValue"
   @input="inputKey"
   :class="modifierClass"
-  placeholder="search"
+  :placeholder="placeholder"
 )
 </template>
 

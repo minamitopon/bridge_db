@@ -23,36 +23,8 @@ export default defineEventHandler(async (e) => {
     LIKE ?;
     `;
     const [rows, fields] = await conn.execute(statement, [keyword]);
-    const res = JSON.parse(JSON.stringify(rows)).map((datum) => {
-      const info: Match = {
-        uuid: datum.uuid,
-        name: datum.name,
-        team_open: datum.team_open,
-        team_close: datum.team_close,
-      };
-      const players: MatchPlayers = {
-        uuid: datum.uuid,
-        north_open: datum.north_open,
-        east_open: datum.east_open,
-        south_open: datum.south_open,
-        west_open: datum.west_open,
-        north_close: datum.north_close,
-        east_close: datum.east_close,
-        south_close: datum.south_close,
-        west_close: datum.west_close,
-      };
-      const progress: MatchProgress = {
-        uuid: datum.uuid,
-        round: datum.round,
-        startBoard: datum.startBoard,
-        lastBoard: datum.lastBoard,
-        imp_open: datum.imp_open,
-        imp_close: datum.imp_close,
-      };
-      return new matchRecord(info, players, progress);
-    });
 
-    return res;
+    return JSON.stringify(rows);
   } catch (e) {
     console.log(e);
     return "";

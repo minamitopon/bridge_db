@@ -35,8 +35,9 @@ const uuidsInView: Ref<string[]> = ref([]);
 const playersInView: Ref<MatchPlayers[]> = ref([]);
 const progressInView: Ref<MatchProgress[]> = ref([]);
 const matchData = computed(() => reactive(matchesStore.getData));
-const vugraphModel: Ref<matchRecord[]> = ref([]);
+const initialVugraphModel: Ref<matchRecord[]> = ref([]);
 const searchResult: Ref<matchRecord[]> = ref([]);
+const vugraphModel: Ref<matchRecord[]> = ref([]);
 
 /** watch */
 watchEffect(() => {
@@ -63,7 +64,7 @@ watch(
       !proxyToArray(progressInView.value)[0]
     )
       return;
-    vugraphModel.value = matchData.value.map((data) => {
+    initialVugraphModel.value = matchData.value.map((data) => {
       const player = proxyToArray(playersInView.value)[0].find((player) => {
         return player.uuid === data.uuid;
       });
@@ -74,6 +75,7 @@ watch(
       );
       return new matchRecord(data, player, progress);
     });
+    vugraphModel.value = initialVugraphModel.value;
   }
 );
 
@@ -85,7 +87,34 @@ const handleSimpleSearch = async (keyword) => {
   const { data: result } = await useFetch("/api/sql/search/simple-search", {
     query: { keyword: keyword },
   });
-  searchResult.value = result.value;
+  vugraphModel.value = JSON.parse(result.value).map((datum) => {
+    const info: Match = {
+      uuid: datum.uuid,
+      name: datum.name,
+      team_open: datum.team_open,
+      team_close: datum.team_close,
+    };
+    const players: MatchPlayers = {
+      uuid: datum.uuid,
+      north_open: datum.north_open,
+      east_open: datum.east_open,
+      south_open: datum.south_open,
+      west_open: datum.west_open,
+      north_close: datum.north_close,
+      east_close: datum.east_close,
+      south_close: datum.south_close,
+      west_close: datum.west_close,
+    };
+    const progress: MatchProgress = {
+      uuid: datum.uuid,
+      round: datum.round,
+      startBoard: datum.startBoard,
+      lastBoard: datum.lastBoard,
+      imp_open: datum.imp_open,
+      imp_close: datum.imp_close,
+    };
+    return new matchRecord(info, players, progress);
+  });
 };
 </script>
 
@@ -99,7 +128,7 @@ const handleSimpleSearch = async (keyword) => {
   .archive__table
     am-common-inner(inner-size="l")
       template(v-slot:content)
-        am-common-table(fixed v-if="vugraphModel")
+        am-common-table(fixed)
           colgroup
             col(width="auto")
             col(width="164px")
@@ -120,7 +149,8 @@ const handleSimpleSearch = async (keyword) => {
                 | クローズドルーム
           tbody
             am-common-table-row(
-              v-for="match in searchResult"
+              v-for="match in vugraphModel"
+              :key="match.uuid"
               has-event
               @click="handleClick(match.uuid)"
             )

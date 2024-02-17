@@ -20,5 +20,9 @@ watchEffect(() => {
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="searchWord")
+      atom-common-input(
+        input-size="m"
+        v-model="searchWord"
+        placeholder="試合名、チーム名、プレイヤー名で検索"
+      )
 </template>
