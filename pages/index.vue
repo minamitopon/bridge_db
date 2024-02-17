@@ -12,11 +12,12 @@ import pinia from "../stores/index";
 import { useMatchesStore } from "../stores/matchRecord/matchRecord";
 import { usePlayersStore } from "../stores/players/players";
 import { useProgressStore } from "../stores/progress/index";
-
 import { proxyToArray } from "../utils";
-
-import { type Match, type MatchPlayers } from "../types/front/matchRecord";
-
+import {
+  type Match,
+  type MatchPlayers,
+  type MatchProgress,
+} from "../types/front/matchRecord";
 import { matchRecord } from "../model/matchRecord";
 
 const matchesStore = useMatchesStore(pinia());
@@ -30,47 +31,47 @@ const uuidsInView: Ref<string[]> = ref([]);
 const playersInView: Ref<MatchPlayers[]> = ref([]);
 const matchData = computed(() => reactive(matchesStore.getData));
 const vugraphModel: Ref<any[]> = ref([]);
+const progressInView: Ref<MatchProgress[]> = ref([]);
 
-const sample = {
-  id: 1,
-  uuid: "yerty",
-  round: "1-1",
-  startBoard: 1,
-  lastBoard: 1,
-  imp_open: 1,
-  imp_close: 1,
-};
 watchEffect(() => {
   uuidsInView.value = matchData.value.map((d) => d.uuid);
 });
 watch(
   () => [...uuidsInView.value],
-  async (n, p) => {
-    playersInView.value = await playersStore.fetchByUuids(uuidsInView.value);
+  async () => {
+    await Promise.all([
+      (playersInView.value = await playersStore.fetchByUuids(
+        uuidsInView.value
+      )),
+      (progressInView.value = await progressStore.fetchByUuids(
+        uuidsInView.value
+      )),
+    ]);
   }
 );
 watch(
-  () => [...playersInView.value],
-  async (n, p) => {
+  () => [...uuidsInView.value, ...playersInView.value, ...progressInView.value],
+  async () => {
+    if (
+      !proxyToArray(playersInView.value)[0] ||
+      !proxyToArray(progressInView.value)[0]
+    )
+      return;
     vugraphModel.value = matchData.value.map((data) => {
-      const player = proxyToArray(playersInView.value)[0].find((p) => {
-        return p.uuid === data.uuid;
+      const player = proxyToArray(playersInView.value)[0].find((player) => {
+        return player.uuid === data.uuid;
       });
-      if (!player) return;
-      return new matchRecord(data, player, sample);
+      const progress = proxyToArray(progressInView.value)[0].find(
+        (progress) => {
+          return progress.uuid === data.uuid;
+        }
+      );
+      return new matchRecord(data, player, progress);
     });
   }
 );
 
-const vugraph = computed(() => {
-  const matchData: Match[] = reactive(matchesStore.getData);
-  matchData.map((data) => {
-    const player = playersInView.value.find((p) => p.uuid === data.uuid);
-    if (!player) return;
-    return new matchRecord(data, player, sample);
-  });
-  return matchData;
-});
+const cols = ref(["auto", "120px", "120px", "auto", "auto"]);
 
 const handleClick = (uuid) => {
   console.log(uuid);
@@ -82,11 +83,15 @@ const handleClick = (uuid) => {
   .archive__search
     og-search
   .archive__table
-    am-common-inner(inner-size="m")
+    am-common-inner(inner-size="xl")
       template(v-slot:content)
-        am-common-table(fixed v-if="vugraph")
+        am-common-table(fixed v-if="vugraphModel")
           colgroup
-            col(v-for="col in cols" :width="col")
+            col(width="auto")
+            col(width="164px")
+            col(width="164px")
+            col(width="auto")
+            col(width="auto")
           thead
             am-common-table-row
               am-common-table-header-cell
@@ -95,18 +100,30 @@ const handleClick = (uuid) => {
                 | チーム１
               am-common-table-header-cell
                 | チーム２
+              am-common-table-header-cell
+                | オープンルーム
+              am-common-table-header-cell
+                | クローズドルーム
           tbody
             am-common-table-row(
-              v-for="match in vugraph"
+              v-for="match in vugraphModel"
               has-event
               @click="handleClick(match.uuid)"
             )
               am-common-table-cell
-                | {{ match.name }}
+                | {{ match.matchName }}
               am-common-table-cell
-                | {{ match.team_close }}
+                | {{ match.teamName.open }}
               am-common-table-cell
-                | {{ match.team_close }}
+                | {{ match.teamName.close }}
+              am-common-table-cell
+                | {{ match.openRoomPlayers.north }} - {{ match.openRoomPlayers.south }}
+                br
+                | {{ match.openRoomPlayers.east }} - {{ match.openRoomPlayers.west }}
+              am-common-table-cell
+                | {{ match.closeRoomPlayers.north }} - {{ match.closeRoomPlayers.south }}
+                br
+                | {{ match.closeRoomPlayers.east }} - {{ match.closeRoomPlayers.west }}
 </template>
 
 <style lang="sass">
@@ -115,6 +132,6 @@ const handleClick = (uuid) => {
     width: 800px
     margin: 0 auto 32px 32px
   .archive__table
-    width: 800px
+    width: 1200px
     margin-left: 32px
 </style>

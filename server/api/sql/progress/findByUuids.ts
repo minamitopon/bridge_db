@@ -7,7 +7,7 @@ export default defineEventHandler(async (e) => {
     const conditions = body.map((uuid) => `'${uuid}'`);
 
     const statement = `
-    SELECT * FROM players
+    SELECT * FROM match_progress
     WHERE uuid IN (${conditions});
     `;
     const conn = await dbConnection;

@@ -11,6 +11,10 @@ export class matchRecord {
     this.progress = progress;
   }
 
+  get matchName() {
+    return this.info.name;
+  }
+
   get uuid() {
     return this.info.uuid;
   }
