@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, reactive, type Ref } from "vue";
+import { ref, reactive, computed, type Ref } from "vue";
 import { searchQuery } from "../../../types/front";
 
 /** defines */
 const emits = defineEmits<Emits>();
 const tab: Ref<string> = ref("simple");
-const searchWord = ref("");
+const searchWord: Ref<string> = ref("");
 let searchQuery: searchQuery = reactive({
   matchName: "",
   teamName: "",
@@ -14,12 +14,23 @@ let searchQuery: searchQuery = reactive({
   hands: "",
 });
 
+/** computed */
+const disabledSearch = computed(() => {
+  return !searchWord.value;
+});
+const disabledReset = computed(() => {
+  return !searchWord.value;
+});
+
 /** methods */
 const handleUpdateSearchWord = (word) => {
   searchWord.value = word;
 };
 const updateSearchQuery = (query) => {
   searchQuery = query;
+};
+const clear = () => {
+  searchWord.value = "";
 };
 
 /** emits */
@@ -35,25 +46,36 @@ const search = () => {
 
 <template lang="pug">
 .og-search
-  v-tabs(v-model="tab")
-    v-tab(value="simple")
-      | 簡易検索
-    v-tab(value="detailed")
-      | 詳細検索
-  v-window(v-model="tab")
-    v-window-item(value="simple")
+  el-tabs(v-model="tab" type="border-card")
+    el-tab-pane(label="簡易検索" name="simple")
       mc-simple-search(
         @update:searchWord="handleUpdateSearchWord"
       )
-    v-window-item(value="detailed")
+    el-tab-pane(label="詳細検索" name="detailed")
       mc-detail-search(
         @update:searchQuery="updateSearchQuery"
       )
-  atom-common-button(
-    size="s"
-    color="heart"
-    label="search"
-    @click="search"
-    plain
-  )
+    .og-search-buttons
+      atom-common-button(
+        size="m"
+        color="spade"
+        label="検索"
+        @click="search"
+        :disabled="disabledSearch"
+        plain
+      )
+      atom-common-button(
+        size="m"
+        color="club"
+        label="クリア"
+        @click="clear"
+        :disabled="disabledReset"
+        plain
+      )
 </template>
+
+<style lang="sass">
+.og-search
+  .og-search-buttons
+    margin-top: 16px
+</style>

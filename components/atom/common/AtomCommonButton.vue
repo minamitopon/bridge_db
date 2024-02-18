@@ -6,7 +6,7 @@ interface Props {
   size: "s" | "m" | "l";
   color?: "spade" | "heart" | "diamond" | "club";
   label?: string;
-  disable?: boolean;
+  disabled?: boolean;
   plain?: boolean;
   icon?: string;
   width?: number;
@@ -17,7 +17,7 @@ interface Props {
 const Props = withDefaults(defineProps<Props>(), {
   color: "club",
   plain: true,
-  disable: false,
+  disabled: false,
 });
 
 const modifierClass = computed(() => {
@@ -61,7 +61,7 @@ const onClick = () => {
 el-button.atom-common-button(
   :size="buttonSize"
   :color="buttonColor"
-  :disable="disable"
+  :disabled="disabled"
   @click="onClick"
   :plain="plain"
   :class="modifierClass"
