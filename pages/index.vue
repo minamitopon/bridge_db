@@ -18,6 +18,7 @@ import {
   type MatchPlayers,
   type MatchProgress,
 } from "../types/front/matchRecord";
+import { type searchQuery } from "../types/front";
 import { matchRecord } from "../model/matchRecord";
 
 /** store */
@@ -115,6 +116,18 @@ const handleSimpleSearch = async (keyword) => {
     };
     return new matchRecord(info, players, progress);
   });
+};
+const handleDetailedSearch = async (query: searchQuery) => {
+  const { data: result } = await useFetch("/api/sql/search/detailed-search", {
+    query: {
+      match_name: query.match_name,
+      team_name: query.team_name,
+      player_name: query.player_name,
+      auction: query.auction,
+      hands: query.hands,
+    },
+  });
+  console.log(result.value);
 };
 </script>
 

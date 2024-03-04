@@ -6,20 +6,22 @@ import { searchQuery } from "../../../types/front";
 const emits = defineEmits<Emits>();
 const tab: Ref<string> = ref("simple");
 const searchWord: Ref<string> = ref("");
-let searchQuery: searchQuery = reactive({
-  matchName: "",
-  teamName: "",
-  playerName: "",
+const searchQuery: Ref<searchQuery> = ref({
+  match_name: "",
+  team_name: "",
+  player_name: "",
   auction: "",
   hands: "",
 });
 
 /** computed */
-const disabledSearch = computed(() => {
+const disabledSimpleSearch = computed(() => {
   return !searchWord.value;
 });
-const disabledReset = computed(() => {
-  return !searchWord.value;
+const disabledDetailSearch = computed(() => {
+  return !Object.keys(searchQuery.value).some((key) => {
+    return searchQuery.value[key];
+  });
 });
 
 /** methods */
@@ -27,10 +29,13 @@ const handleUpdateSearchWord = (word) => {
   searchWord.value = word;
 };
 const updateSearchQuery = (query) => {
-  searchQuery = query;
+  searchQuery.value = query;
 };
-const clear = () => {
+const clearSearchWord = () => {
   searchWord.value = "";
+};
+const clearSearchQuery = () => {
+  Object.keys(searchQuery.value).map((key) => searchQuery.value[key] === "");
 };
 
 /** emits */
@@ -39,8 +44,10 @@ interface Emits {
   (e: "detailedSearch", query: searchQuery): void;
 }
 const search = () => {
-  if (tab.value === "simple") emits("simpleSearch", searchWord.value);
-  else if (tab.value === "detailed") emits("detailedSearch", searchQuery);
+  emits("simpleSearch", searchWord.value);
+};
+const detailSearch = () => {
+  emits("detailedSearch", searchQuery.value);
 };
 </script>
 
@@ -51,27 +58,44 @@ const search = () => {
       mc-simple-search(
         @update:searchWord="handleUpdateSearchWord"
       )
+      .og-search-buttons
+        atom-common-button(
+          size="m"
+          color="spade"
+          label="検索"
+          @click="search"
+          :disabled="disabledSimpleSearch"
+          plain
+        )
+        atom-common-button(
+          size="m"
+          color="club"
+          label="クリア"
+          @click="clearSearchWord"
+          :disabled="disabledSimpleSearch"
+          plain
+        )
     el-tab-pane(label="詳細検索" name="detailed")
       mc-detail-search(
         @update:searchQuery="updateSearchQuery"
       )
-    .og-search-buttons
-      atom-common-button(
-        size="m"
-        color="spade"
-        label="検索"
-        @click="search"
-        :disabled="disabledSearch"
-        plain
-      )
-      atom-common-button(
-        size="m"
-        color="club"
-        label="クリア"
-        @click="clear"
-        :disabled="disabledReset"
-        plain
-      )
+      .og-search-buttons
+        atom-common-button(
+          size="m"
+          color="spade"
+          label="詳細検索"
+          @click="detailSearch"
+          :disabled="disabledDetailSearch"
+          plain
+        )
+        atom-common-button(
+          size="m"
+          color="club"
+          label="クリア"
+          @click="clearSearchQuery"
+          :disabled="disabledDetailSearch"
+          plain
+        )
 </template>
 
 <style lang="sass">

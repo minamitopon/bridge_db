@@ -2,9 +2,9 @@
 import { ref, computed, watchEffect } from "vue";
 import { searchQuery } from "../../../types/front";
 
-const matchName = ref("");
-const teamName = ref("");
-const playerName = ref("");
+const match_name = ref("");
+const team_name = ref("");
+const player_name = ref("");
 const auction = ref("");
 const hands = ref("");
 
@@ -15,9 +15,9 @@ const emits = defineEmits<Emits>();
 
 const searchQuery = computed(() => {
   return {
-    matchName: matchName.value,
-    teamName: teamName.value,
-    playerName: playerName.value,
+    match_name: match_name.value,
+    team_name: team_name.value,
+    player_name: player_name.value,
     auction: auction.value,
     hands: hands.value,
   };
@@ -31,31 +31,31 @@ watchEffect(() => {
 <template lang="pug">
 .molecules-search-inputs
   atom-common-label(
-    title="match name"
+    title="試合名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="matchName")
+      atom-common-input(input-size="m" v-model="match_name")
   atom-common-label(
-    title="team name"
+    title="チーム名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="teamName")
+      atom-common-input(input-size="m" v-model="team_name")
   atom-common-label(
-    title="player's name"
+    title="プレイヤー名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="playerName")
+      atom-common-input(input-size="m" v-model="player_name")
   atom-common-label(
-    title="auction"
+    title="オークション"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="auction")
+      atom-common-input(input-size="m" v-model="auction" desabled)
   atom-common-label(
-    title="hands"
+    title="ハンド"
     bold
   )
     template(v-slot:contents)

@@ -1,7 +1,7 @@
 export interface searchQuery {
-  matchName: string;
-  teamName: string;
-  playerName: string;
+  match_name: string;
+  team_name: string;
+  player_name: string;
   auction: string;
   hands: string;
 }
