@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery } from "h3";
 import { dbConnection } from "../../sql";
 import { type SearchResult, type Hands } from "../../../../types/backend";
+import mysql from "mysql2/promise";
 
 export default defineEventHandler(async (e) => {
   const query = await getQuery(e);
@@ -8,13 +9,15 @@ export default defineEventHandler(async (e) => {
   const conn = await dbConnection;
   try {
     const tmpResult: SearchResult[] = [];
-    const hasConditionExceptHands =
-      Object.entries(query).filter((condition) => condition[1] !== "").length >
-      0;
     /**
      * ハンドの方がレコード数が多いので、先に条件に合致したUUIDだけ絞り込む
      */
-    if (hasConditionExceptHands) {
+    if (
+      query.match_name ||
+      query.team_name ||
+      query.player_name ||
+      query.auction
+    ) {
       const statement = `
         select * from matches as ms
         inner join players as ps
@@ -32,43 +35,44 @@ export default defineEventHandler(async (e) => {
         const uuids = tmpResult.map((r) => r.uuid);
         const statement = `
             select uuid, board from hands
-            where uuid in (?)
-            and ${parseHandCondition(query.hands)};
+            where ${uuids ? `uuid in (?) and ` : ``}
+            ${parseHandCondition(query.hands)};
           `;
+
         const [rows] = (await conn.execute(statement, [
           uuids,
         ])) as unknown[][] as Hands[][];
         const narrowedUuids = rows.map((r) => r.uuid);
-        return JSON.stringify(
-          tmpResult.filter((r) => narrowedUuids.includes(r.uuid))
-        );
+        const response = tmpResult
+          .filter((r) => narrowedUuids.includes(r.uuid))
+          .map((r) => {
+            const board = rows.find((row) => row.uuid === r.uuid);
+            return Object.assign({}, r, board);
+          });
+        return JSON.stringify(parseSearchResults(response));
       }
       return JSON.stringify(parseSearchResults(rows));
     } else {
-      const statementForHands = `
-          select uuid, board from hands
-          where ${parseHandCondition(query.hands)};
-        `;
-      const [rowsForHands] = (await conn.execute(
-        statementForHands
-      )) as unknown[][] as Hands[][];
-      const narrowedUuids = rowsForHands.map((r) => r.uuid);
       const statement = `
+        with bd as (select uuid, board from hands where ${parseHandCondition(
+          query.hands
+        )})
         select * from matches as ms
         inner join players as ps
         on ms.uuid = ps.uuid
         inner join match_progress as mp
         on ms.uuid = mp.uuid
-        where ms.uuid in (?);
+        inner join bd
+        on ms.uuid = bd.uuid;
       `;
-      const [rows] = (await conn.execute(statement, [
-        narrowedUuids,
-      ])) as unknown[][] as SearchResult[][];
+      const [rows] = (await conn.execute(
+        statement
+      )) as unknown[][] as SearchResult[][];
       return JSON.stringify(parseSearchResults(rows));
     }
   } catch (e) {
     console.log(e);
-    return "";
+    return { status: "error" };
   }
 });
 
@@ -203,11 +207,12 @@ const handColumns = [
 const handColumnsRegexpCondition = (reg) => {
   const condition: string[] = [];
   for (const column of handColumns) {
-    condition.push(`${column} redexp '${reg}'`);
+    condition.push(`${column} regexp '${reg}'`);
   }
   return condition.join(" or ");
 };
 
+/** フロントでモデルに使用できる形にして返却 */
 const parseSearchResults = (results: SearchResult[]) => {
   return results.map((result) => {
     return {
@@ -236,6 +241,7 @@ const parseSearchResults = (results: SearchResult[]) => {
         imp_open: result.imp_open,
         imp_close: result.imp_close,
       },
+      board: result.board ?? null,
     };
   });
 };

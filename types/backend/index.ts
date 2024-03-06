@@ -17,6 +17,7 @@ export interface SearchResult {
   lastBoard: number;
   imp_open: number;
   imp_close: number;
+  board?: string;
 }
 
 export interface Hands {

@@ -127,7 +127,14 @@ const handleDetailedSearch = async (query: searchQuery) => {
       hands: query.hands,
     },
   });
-  console.log(result.value);
+  vugraphModel.value = JSON.parse(result.value).map((datum) => {
+    return new matchRecord(
+      datum.info,
+      datum.players,
+      datum.progress,
+      datum.board
+    );
+  });
 };
 </script>
 

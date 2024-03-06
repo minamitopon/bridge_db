@@ -4,11 +4,18 @@ export class matchRecord {
   info: Match;
   players: MatchPlayers;
   progress: MatchProgress;
+  board?: number;
 
-  constructor(info: Match, players: MatchPlayers, progress: MatchProgress) {
+  constructor(
+    info: Match,
+    players: MatchPlayers,
+    progress: MatchProgress,
+    board?: number
+  ) {
     this.info = info;
     this.players = players;
     this.progress = progress;
+    this.board = board;
   }
 
   get matchName() {
