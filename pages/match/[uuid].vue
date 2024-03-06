@@ -25,4 +25,5 @@ onMounted(() => {
     mc-common-page-header(title="test" @back="handleBack")
   .match-main
     p {{ uuid }}
+    p テスト用ID 81a88a08-e4b6-4d5e-9d05-ceac018c16f7
 </template>
