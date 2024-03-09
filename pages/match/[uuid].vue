@@ -1,21 +1,27 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, type Ref } from "vue";
+import pinia from "../../stores/";
+import { useBoardInfoStore } from "../../stores/boardinfo/";
+import { BoardInfoModel } from "../../model/BoardInfoModel";
+/** store */
+const boardInfoStore = useBoardInfoStore(pinia());
 /** defines */
 interface Props {}
 /** defines */
 const Props = withDefaults(defineProps<Props>(), {});
 const route = useRoute();
 const uuid = ref(route.params.uuid);
+const boardsInfo: Ref<BoardInfoModel[]> = ref([]);
 const handleBack = () => {
   /* NOP */
 };
 
 const vugraphData = computed(() => {
-  console.log(uuid);
   return;
 });
-onMounted(() => {
-  // Promise.all();
+onMounted(async () => {
+  await boardInfoStore.fetchByUuid(uuid.value);
+  boardsInfo.value = boardInfoStore.findByUuid(uuid.value);
 });
 </script>
 
@@ -24,6 +30,4 @@ onMounted(() => {
   .match-header
     mc-common-page-header(title="test" @back="handleBack")
   .match-main
-    p {{ uuid }}
-    p テスト用ID 81a88a08-e4b6-4d5e-9d05-ceac018c16f7
 </template>

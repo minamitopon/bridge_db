@@ -41,3 +41,12 @@ export interface Hands {
   west_diamond: string;
   west_club;
 }
+
+export interface BoardInfo {
+  id: number;
+  uuid: string;
+  roomId: "o" | "c";
+  boardNum: number;
+  auction: string;
+  play: string;
+}

@@ -1,5 +1,6 @@
 import { dbConnection } from "../../sql";
 import { defineEventHandler, getQuery } from "h3";
+import mysql from "mysql2/promise";
 
 export default defineEventHandler(async (e) => {
   const query = await getQuery(e);

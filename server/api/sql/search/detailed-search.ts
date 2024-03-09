@@ -1,7 +1,6 @@
 import { defineEventHandler, getQuery } from "h3";
 import { dbConnection } from "../../sql";
 import { type SearchResult, type Hands } from "../../../../types/backend";
-import mysql from "mysql2/promise";
 
 export default defineEventHandler(async (e) => {
   const query = await getQuery(e);
