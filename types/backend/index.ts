@@ -49,4 +49,5 @@ export interface BoardInfo {
   boardNum: number;
   auction: string;
   play: string;
+  tricks: string;
 }

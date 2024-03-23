@@ -30,4 +30,6 @@ onMounted(async () => {
   .match-header
     mc-common-page-header(title="test" @back="handleBack")
   .match-main
+    mc-match-results-table(:boards="boardsInfo")
+  p 16258020-3f61-415d-9ecc-24aea6845ba0
 </template>
