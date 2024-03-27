@@ -43,10 +43,10 @@ const emitClick = () => emits("click");
           tr(v-for="result in openRoomResults" :key="result.boardNumber")
             td {{ result.boardNumber }}
             td {{ result.contract }}
-            td
+            td {{ result.declare }}
             td {{ result.result }}
             td {{ result.score }}
-            td
+            td {{ result.fullAuction}}
     el-tab-pane(label="Closed room" name="closed")
       v-table
         thead

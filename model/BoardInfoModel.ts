@@ -24,23 +24,42 @@ export class BoardInfoModel {
     const parseAuction = this.boardInfo.auction
       .replace(/[\|mb\||\|pg\|]/g, "")
       .replace("PPP", "")
-      .match(/[1-7][C|D|H|S|NT]|[DRP]/g);
+      .match(/[1-7][C|D|H|S|NT]/g);
 
     return parseAuction;
   }
 
-  get contract() {
-    // パスアウト未対応
-    const reversedAuction = this.auction?.reverse();
-    const isDoubledContract =
-      this.auction?.pop() === "D" || this.auction?.pop() === "R";
-    const isBid = (call) => {
-      return call !== "P" && call !== "D" && call !== "R";
-    };
+  get fullAuction() {
+    const parseAuction = this.boardInfo.auction
+      .replace(/(\|mb\|)|(\|pg\|)/g, "")
+      .replace("ppp", "")
+      .match(/[1-7][C|D|H|S|NT]|[drp]/g);
+    return parseAuction || [];
+  }
 
-    return isDoubledContract
-      ? `${reversedAuction?.find((call) => isBid(call))}${this.auction?.pop()}`
-      : this.auction?.pop();
+  get contract() {
+    let contract;
+    switch (this.fullAuction?.pop()) {
+      case "p":
+        contract = "PO";
+        break;
+      case "d":
+        contract =
+          this.fullAuction
+            ?.reverse()
+            .find((call) => call !== "d" && call !== "p") + "x";
+        break;
+      case "r":
+        contract =
+          this.fullAuction
+            ?.reverse()
+            .find((call) => call !== "r" && call !== "d" && call !== "p") +
+          "xx";
+        break;
+      default:
+        contract = this.fullAuction?.pop();
+    }
+    return contract;
   }
 
   get play() {
@@ -85,6 +104,10 @@ export class BoardInfoModel {
       "EW",
     ];
     return vul[this.boardNumber % 16];
+  }
+
+  get declare() {
+    return this.findDeclare(this.fullAuction, this.boardNumber);
   }
 
   unitedResult(tricks) {
@@ -144,5 +167,22 @@ export class BoardInfoModel {
         break;
     }
     return score;
+  }
+
+  findDeclare(auction, boardNum) {
+    if (this.contract === "PO") return "PO";
+    const contract = this.contract.replace(/x|r/, "");
+    const lastTrump = contract[1];
+    const lastCallerId = auction.indexOf(contract) % 4;
+    const firstCallerId =
+      auction.findIndex((call, index) => {
+        const trump = call[1];
+        return trump === lastTrump && index % 2 === lastCallerId % 2;
+      }) % 4;
+
+    const side = ["W", "N", "E", "S", "W", "N", "E", "S"];
+    const orderOfCall = side.slice(boardNum % 4, (boardNum % 4) + 4);
+
+    return orderOfCall[firstCallerId];
   }
 }
