@@ -79,12 +79,12 @@ export class BoardInfoModel {
       : null;
   }
 
-  get score() {
-    return this.calcScore(this.contract, "");
+  get score(): number {
+    return this.calcScore(this.contract, this.vulnerable);
   }
 
-  get vulnerable() {
-    const vul = [
+  get vulnerable(): "NV" | "V" {
+    const base = [
       "EW",
       "N",
       "NS",
@@ -103,10 +103,15 @@ export class BoardInfoModel {
       "NS",
       "EW",
     ];
-    return vul[this.boardNumber % 16];
+    const vulOfBoard = base[this.boardNumber % 16];
+
+    if (vulOfBoard === "N") return "NV";
+    if (vulOfBoard === "B") return "V";
+    if (vulOfBoard.includes(this.declare)) return "V";
+    else return "NV";
   }
 
-  get declare() {
+  get declare(): string {
     return this.findDeclare(this.fullAuction, this.boardNumber);
   }
 
@@ -116,56 +121,47 @@ export class BoardInfoModel {
     else return tricks;
   }
 
-  // バル未対応
-  calcScore(contract, vul) {
+  // ダブルド未対応
+  calcScore(contract: string, vul: "NV" | "V"): number {
     const trump = contract[1];
     const makeCount = this.totalTricks ? this.totalTricks - 6 : null;
 
-    if (makeCount === null) return null;
-    if (this.result < 0) return this.result * 50;
+    // パスアウト
+    if (makeCount === null) return 0;
+
+    // ダウンした時の点数
+    const downPenalty = vul === "V" ? 100 : 50;
+    if (this.result < 0) return this.result * downPenalty;
+
+    // メイクした時の得点
+    const gameBonus = vul === "V" ? 450 : 250;
+    const slamBonus = vul === "V" ? 750 : 500;
+
+    const isMinor = trump === "C" || trump === "D";
+    const isMajor = trump === "H" || trump === "S";
+    const isNt = trump === "N";
+
+    const declaration = toNumber(contract[0]);
+    const isBelowGame = isNt
+      ? declaration < 3
+      : isMajor
+      ? declaration < 4
+      : declaration < 5;
+    const isBelowSmallSlam = declaration < 6;
+    const isBelowGrandSlam = declaration < 7;
+
+    const basePoint = isMinor ? 20 : 30;
+
     let score = 0;
-    switch (trump) {
-      case "C":
-      case "D": {
-        const declaration = contract[0];
-        score += makeCount * 20;
-        score += 50;
-        if (declaration < 5) break;
-        score += 250;
-        if (declaration < 6) break;
-        score += 500;
-        if (declaration < 7) break;
-        score += 500;
-        break;
-      }
-      case "H":
-      case "S": {
-        const declaration = contract[0];
-        score += makeCount * 30;
-        score += 50;
-        if (declaration < 4) break;
-        score += 250;
-        if (declaration < 6) break;
-        score += 500;
-        if (declaration < 7) break;
-        score += 500;
-        break;
-      }
-      case "N": {
-        const declaration = contract[0];
-        score += makeCount * 30 + 10;
-        score += 50;
-        if (declaration < 3) break;
-        score += 250;
-        if (declaration < 6) break;
-        score += 500;
-        if (declaration < 7) break;
-        score += 500;
-        break;
-      }
-      default:
-        break;
-    }
+    score += makeCount * basePoint;
+    if (isNt) score += 10;
+    score += 50;
+    if (isBelowGame) return score;
+    score += gameBonus;
+    if (isBelowSmallSlam) return score;
+    score += slamBonus;
+    if (isBelowGrandSlam) return score;
+    score += slamBonus;
     return score;
   }
 
