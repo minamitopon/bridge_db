@@ -62,6 +62,14 @@ export class BoardInfoModel {
     return contract;
   }
 
+  get doubled() {
+    return /[^x]x$/.test(this.contract);
+  }
+
+  get redoubled() {
+    return /xx$/.test(this.contract);
+  }
+
   get play() {
     return this.boardInfo.play;
   }
@@ -121,36 +129,69 @@ export class BoardInfoModel {
     else return tricks;
   }
 
-  // ダブルド未対応
   calcScore(contract: string, vul: "NV" | "V"): number {
     const trump = contract[1];
     const makeCount = this.totalTricks ? this.totalTricks - 6 : null;
-
+    const isVul = vul === "V";
     // パスアウト
     if (makeCount === null) return 0;
 
     // ダウンした時の点数
-    const downPenalty = vul === "V" ? 100 : 50;
+    const downPenalty = isVul ? 100 : 50;
     if (this.result < 0) return this.result * downPenalty;
 
     // メイクした時の得点
-    const gameBonus = vul === "V" ? 450 : 250;
-    const slamBonus = vul === "V" ? 750 : 500;
+    const gameBonus = isVul ? 450 : 250;
+    const slamBonus = isVul ? 750 : 500;
 
     const isMinor = trump === "C" || trump === "D";
     const isMajor = trump === "H" || trump === "S";
     const isNt = trump === "N";
 
     const declaration = toNumber(contract[0]);
+    const basePoint = isMinor ? 20 : 30;
+    const upTricks = makeCount - declaration;
     const isBelowGame = isNt
       ? declaration < 3
       : isMajor
       ? declaration < 4
       : declaration < 5;
+    const isBelowDoubledGame = isMinor ? declaration < 3 : declaration < 2;
+    const isBelowRedoubledGame = isMinor ? declaration < 2 : true;
     const isBelowSmallSlam = declaration < 6;
     const isBelowGrandSlam = declaration < 7;
 
-    const basePoint = isMinor ? 20 : 30;
+    // ダブルドコントラクトの得点
+    if (this.doubled) {
+      let score = 0;
+      score += declaration * basePoint * 2;
+      if (isNt) score += 20;
+      score += upTricks * (isVul ? 200 : 100);
+      score += 100;
+      if (isBelowDoubledGame) return score;
+      score += gameBonus;
+      if (isBelowSmallSlam) return score;
+      score += slamBonus;
+      if (isBelowGrandSlam) return score;
+      score += slamBonus;
+      return score;
+    }
+
+    // リダブルドコントラクトの得点
+    if (this.redoubled) {
+      let score = 0;
+      score += declaration * basePoint * 4;
+      if (isNt) score += 20;
+      score += upTricks * (isVul ? 400 : 200);
+      score += 150;
+      if (isBelowRedoubledGame) return score;
+      score += gameBonus;
+      if (isBelowSmallSlam) return score;
+      score += slamBonus;
+      if (isBelowGrandSlam) return score;
+      score += slamBonus;
+      return score;
+    }
 
     let score = 0;
     score += makeCount * basePoint;
