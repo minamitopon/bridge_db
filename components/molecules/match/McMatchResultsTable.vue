@@ -14,7 +14,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
 const tab: Ref<string> = ref("open");
-const tableHeaders = ["#", "Contract", "Side", "Tricks", "score", "IMP"];
+const tableHeaders = ["#", "Contract", "Side", "Tricks", "score"];
 const allBoards = computed(() => {
   return props.boards.map((board) => new BoardInfoModel(board));
 });
@@ -46,9 +46,8 @@ const emitClick = () => emits("click");
             td {{ result.declare }}
             td {{ result.result }}
             td {{ result.score }}
-            td {{ result.fullAuction}}
     el-tab-pane(label="Closed room" name="closed")
-      v-table
+      v-table.match-results-table__table
         thead
           tr
             th(v-for="column in tableHeaders" :key="column")
@@ -57,16 +56,15 @@ const emitClick = () => emits("click");
           tr(v-for="result in closedRoomResults" :key="result.boardNumber")
             td {{ result.boardNumber }}
             td {{ result.contract }}
-            td
+            td {{ result.declare }}
             td {{ result.result }}
-            td
-            td
+            td {{ result.score }}
 </template>
 
 <style lang="sass">
 .match-results-table
   .match-results-table__table
-    max-height: 300px
+    max-height: 200px
     overflow-y: scroll
     &::-webkit-scrollbar
       display: none
