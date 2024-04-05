@@ -30,7 +30,7 @@ const inputKey = (e) => {
 </script>
 
 <template lang="pug">
-input.atom-common-input(
+input.am-common-input(
   :value="modelValue"
   @input="inputKey"
   :class="modifierClass"
@@ -39,7 +39,7 @@ input.atom-common-input(
 </template>
 
 <style lang="sass">
-.atom-common-input
+.am-common-input
   padding: 3px 5px
   border: solid 2px #646464
   border-radius: 5px

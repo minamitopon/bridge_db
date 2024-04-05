@@ -22,7 +22,7 @@ const Props = withDefaults(defineProps<Props>(), {
 
 const modifierClass = computed(() => {
   return {
-    "atom-common-button__with-icon": Props.icon,
+    "am-common-button__with-icon": Props.icon,
   };
 });
 
@@ -58,7 +58,7 @@ const onClick = () => {
 </script>
 
 <template lang="pug">
-el-button.atom-common-button(
+el-button.am-common-button(
   :size="buttonSize"
   :color="buttonColor"
   :disabled="disabled"
@@ -79,8 +79,8 @@ el-button.atom-common-button(
 </template>
 
 <style lang="sass">
-.atom-common-button
-  &.atom-common-button__with-icon
+.am-common-button
+  &.am-common-button__with-icon
     border: none
     background: none
 </style>

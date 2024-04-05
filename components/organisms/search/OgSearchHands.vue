@@ -12,10 +12,10 @@ const search = () => {
 
 <template lang="pug">
 .og-search
-  atom-common-label
+  am-common-label
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="conditon")
-  atom-common-button(
+      am-common-input(input-size="m" v-model="conditon")
+  am-common-button(
     size="s"
     color="heart"
     label="search"

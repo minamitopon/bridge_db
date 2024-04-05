@@ -16,7 +16,7 @@ const nextButtonOption = {
 
 <template lang="pug">
 .mc-common-paging
-  atom-common-button(
+  am-common-button(
     size="s"
     :width="20"
     :style-option="prevButtonOption"
@@ -27,7 +27,7 @@ const nextButtonOption = {
   .mc-common-paging-count
     span
       | {{ current }}/{{ total }}
-  atom-common-button(
+  am-common-button(
     size="s"
     :width="20"
     :style-option="nextButtonOption"

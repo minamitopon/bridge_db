@@ -35,44 +35,44 @@ watchEffect(() => {
 
 <template lang="pug">
 .molecules-search-hands
-  atom-common-label(
+  am-common-label(
     :title="inputTitles[0]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="spades")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="spades")
+  am-common-label(
     :title="inputTitles[1]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="hearts")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="hearts")
+  am-common-label(
     :title="inputTitles[2]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="diamonds")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="diamonds")
+  am-common-label(
     :title="inputTitles[3]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="clubs")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="clubs")
+  am-common-label(
     :title="inputTitles[4]"
     bold
     font-size="m"
     label-position="left"
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="hands")
+      am-common-input(input-size="m" v-model="hands")
 </template>

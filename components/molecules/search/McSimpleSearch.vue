@@ -15,12 +15,12 @@ watchEffect(() => {
 
 <template lang="pug">
 .molecules-search-inputs
-  atom-common-label(
+  am-common-label(
     title="検索ワード"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(
+      am-common-input(
         input-size="m"
         v-model="searchWord"
         placeholder="試合名、チーム名、プレイヤー名で検索"

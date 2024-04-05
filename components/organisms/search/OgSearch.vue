@@ -59,7 +59,7 @@ const detailSearch = () => {
         @update:searchWord="handleUpdateSearchWord"
       )
       .og-search-buttons
-        atom-common-button(
+        am-common-button(
           size="m"
           color="spade"
           label="検索"
@@ -67,7 +67,7 @@ const detailSearch = () => {
           :disabled="disabledSimpleSearch"
           plain
         )
-        atom-common-button(
+        am-common-button(
           size="m"
           color="club"
           label="クリア"
@@ -80,7 +80,7 @@ const detailSearch = () => {
         @update:searchQuery="updateSearchQuery"
       )
       .og-search-buttons
-        atom-common-button(
+        am-common-button(
           size="m"
           color="spade"
           label="詳細検索"
@@ -88,7 +88,7 @@ const detailSearch = () => {
           :disabled="disabledDetailSearch"
           plain
         )
-        atom-common-button(
+        am-common-button(
           size="m"
           color="club"
           label="クリア"

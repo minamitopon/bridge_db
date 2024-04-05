@@ -30,34 +30,34 @@ watchEffect(() => {
 
 <template lang="pug">
 .molecules-search-inputs
-  atom-common-label(
+  am-common-label(
     title="試合名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="match_name")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="match_name")
+  am-common-label(
     title="チーム名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="team_name")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="team_name")
+  am-common-label(
     title="プレイヤー名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="player_name")
-  atom-common-label(
+      am-common-input(input-size="m" v-model="player_name")
+  am-common-label(
     title="オークション"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="auction" desabled)
-  atom-common-label(
+      am-common-input(input-size="m" v-model="auction" desabled)
+  am-common-label(
     title="ハンド"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="hands")
+      am-common-input(input-size="m" v-model="hands")
 </template>
