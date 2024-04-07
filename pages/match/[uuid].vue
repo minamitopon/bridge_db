@@ -49,6 +49,16 @@ onMounted(async () => {
   .match-header
     mc-common-page-header(title="test" @back="handleBack")
   .match-main
-    mc-match-results-table(:boards="boardsInfo" @clickRow="handleClick")
-    og-match-viewer(:hand="selectedBoard")
+    .match-main-results-table
+      mc-match-results-table(:boards="boardsInfo" @clickRow="handleClick")
+    .match-main-viewer
+      og-match-viewer(:hand="selectedBoard")
 </template>
+
+<style lang="sass">
+.match-main
+  max-width: 800px
+  margin: auto
+  .match-main-results-table
+    margin-bottom: 16px
+</style>
