@@ -9,7 +9,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const srcOfSymbol = computed(() => {
-  return `/assets/images/atom/${props.suit}.svg`;
+  return `/images/atom/${props.suit}.svg`;
 });
 </script>
 
@@ -25,4 +25,11 @@ const srcOfSymbol = computed(() => {
     | {{ cards }}
 </template>
 
-<style lang="sass"></style>
+<style lang="sass">
+.match-suit
+  display: flex
+  gap: 8px
+  align-items: center
+  .match-suit__cards
+    font-size: 18px
+</style>

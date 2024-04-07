@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 interface Props {
-  hand: {}[];
+  hand: any;
 }
 /** defines */
 const props = defineProps<Props>();
+const symbol = ["spade", "heart", "diamond", "club"];
 </script>
 
 <template lang="pug">
 .match-hand
   am-match-suit(
-    v-for="suit in hand"
-    :suit="suit.symbol"
-    :cards="suit.card"
+    v-for="(cards, index) in hand"
+    :suit="index"
+    :cards="cards"
   )
 </template>
 

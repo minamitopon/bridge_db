@@ -4,6 +4,7 @@ import pinia from "../../stores/";
 import { useBoardInfoStore } from "../../stores/boardinfo/";
 import { useHandStore } from "../../stores/hand/";
 import { BoardInfoModel } from "../../model/BoardInfoModel";
+import { HandModel } from "../../model/HandModel";
 /** store */
 const boardInfoStore = useBoardInfoStore(pinia());
 const handStore = useHandStore(pinia());
@@ -15,10 +16,16 @@ const Props = withDefaults(defineProps<Props>(), {});
 const route = useRoute();
 const uuid = ref(route.params.uuid);
 const boardsInfo: Ref<BoardInfoModel[]> = ref([]);
-const hands: Ref<any[]> = ref([]);
-
+const hands: Ref<HandModel[]> = ref([]);
+const selectedBoard: Ref<HandModel> = ref(hands.value[0]);
 const handleBack = () => {
   /* NOP */
+};
+const handleClick = (num) => {
+  selectedBoard.value =
+    (hands.value.find((hand) => {
+      hand.boardNum === num;
+    }) as HandModel) ?? hands.value[Number(num) * 2 - 1];
 };
 
 const vugraphData = computed(() => {
@@ -30,7 +37,10 @@ onMounted(async () => {
     handStore.fetchByUuid(uuid.value),
   ]);
   boardsInfo.value = boardInfoStore.findByUuid(uuid.value);
-  hands.value = handStore.findByUuid(uuid.value);
+  hands.value = handStore
+    .findByUuid(uuid.value)
+    .map((hand) => new HandModel(hand));
+  selectedBoard.value = hands.value[0];
 });
 </script>
 
@@ -39,5 +49,6 @@ onMounted(async () => {
   .match-header
     mc-common-page-header(title="test" @back="handleBack")
   .match-main
-    mc-match-results-table(:boards="boardsInfo")
+    mc-match-results-table(:boards="boardsInfo" @clickRow="handleClick")
+    og-match-viewer(:hand="selectedBoard")
 </template>
