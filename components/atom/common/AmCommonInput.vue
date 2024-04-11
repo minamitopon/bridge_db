@@ -7,9 +7,11 @@ const input = ref("");
 interface Props {
   inputSize: "s" | "m" | "l";
   modelValue: string;
+  placeholder: string;
 }
 const Props = withDefaults(defineProps<Props>(), {
   inputSize: "m",
+  placeholder: "検索ワード",
 });
 
 interface Emits {
@@ -28,16 +30,16 @@ const inputKey = (e) => {
 </script>
 
 <template lang="pug">
-input.atom-common-input(
+input.am-common-input(
   :value="modelValue"
   @input="inputKey"
   :class="modifierClass"
-  placeholder="search"
+  :placeholder="placeholder"
 )
 </template>
 
 <style lang="sass">
-.atom-common-input
+.am-common-input
   padding: 3px 5px
   border: solid 2px #646464
   border-radius: 5px

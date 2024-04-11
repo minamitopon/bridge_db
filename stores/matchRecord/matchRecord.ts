@@ -1,48 +1,22 @@
-import { defineStore, type _GettersTree } from "pinia";
-import { type matchRecord } from "../../types/front/index";
+import { defineStore } from "pinia";
+import { Match } from "../../types/front/matchRecord";
 
-export interface interfaceOfMatchRecordState {
-  allMatchRecords: matchRecord[];
-  narrowedRecord: matchRecord[];
-}
-
-export interface interfaceOfMatchRecordGetters
-  extends _GettersTree<interfaceOfMatchRecordState> {
-  getAllRecord: (state: interfaceOfMatchRecordState) => matchRecord[];
-  getNarrowedRecord: (state: interfaceOfMatchRecordState) => matchRecord[];
-}
-
-export interface interfaceOfMatchRecordActions {
-  searchRecord: (any) => any;
-}
-
-export const useMatchRecordStore = defineStore<
-  string,
-  interfaceOfMatchRecordState,
-  interfaceOfMatchRecordGetters,
-  interfaceOfMatchRecordActions
->("matchRecord", {
+export const useMatchesStore = defineStore("matches", {
   state: () => ({
-    allMatchRecords: [],
-    narrowedRecord: [],
+    data: [] as Match[],
   }),
   getters: {
-    getAllRecord: (state) => {
-      return state.allMatchRecords;
-    },
-    getNarrowedRecord: (state) => {
-      return state.narrowedRecord;
-    },
+    getData: (state) => state.data,
   },
   actions: {
-    async searchRecord(conditions) {
-      const { data: result } = await useFetch("/api/sql/search/search-match", {
-        method: "POST",
-        body: {
-          contents: conditions,
-        },
-      });
-      this.narrowedRecord = JSON.parse(result.value);
+    async fetch() {
+      try {
+        const res = await fetch("/api/sql/match");
+        const json = await res.json();
+        this.data = json;
+      } catch (e) {
+        throw new Error(e);
+      }
     },
   },
 });

@@ -2,9 +2,9 @@
 import { ref, computed, watchEffect } from "vue";
 import { searchQuery } from "../../../types/front";
 
-const matchName = ref("");
-const teamName = ref("");
-const playerName = ref("");
+const match_name = ref("");
+const team_name = ref("");
+const player_name = ref("");
 const auction = ref("");
 const hands = ref("");
 
@@ -15,9 +15,9 @@ const emits = defineEmits<Emits>();
 
 const searchQuery = computed(() => {
   return {
-    matchName: matchName.value,
-    teamName: teamName.value,
-    playerName: playerName.value,
+    match_name: match_name.value,
+    team_name: team_name.value,
+    player_name: player_name.value,
     auction: auction.value,
     hands: hands.value,
   };
@@ -30,34 +30,34 @@ watchEffect(() => {
 
 <template lang="pug">
 .molecules-search-inputs
-  atom-common-label(
-    title="match name"
+  am-common-label(
+    title="試合名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="matchName")
-  atom-common-label(
-    title="team name"
+      am-common-input(input-size="m" v-model="match_name")
+  am-common-label(
+    title="チーム名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="teamName")
-  atom-common-label(
-    title="player's name"
+      am-common-input(input-size="m" v-model="team_name")
+  am-common-label(
+    title="プレイヤー名"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="playerName")
-  atom-common-label(
-    title="auction"
+      am-common-input(input-size="m" v-model="player_name")
+  am-common-label(
+    title="オークション"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="auction")
-  atom-common-label(
-    title="hands"
+      am-common-input(input-size="m" v-model="auction" desabled)
+  am-common-label(
+    title="ハンド"
     bold
   )
     template(v-slot:contents)
-      atom-common-input(input-size="m" v-model="hands")
+      am-common-input(input-size="m" v-model="hands")
 </template>

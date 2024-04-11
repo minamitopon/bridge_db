@@ -35,5 +35,5 @@ const modifierClass = computed(() => {
   &.am-common-inner--large
     width: 1000px
   &.am-common-inner--x-large
-    width: 1400px
+    width: 1200px
 </style>

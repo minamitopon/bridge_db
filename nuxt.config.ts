@@ -1,3 +1,5 @@
+import vuetify from "vite-plugin-vuetify";
+
 export default defineNuxtConfig({
   typescript: {
     shim: false,
@@ -22,8 +24,13 @@ export default defineNuxtConfig({
         });
       }
     },
+    transpile: ["vuetify"],
   },
   modules: ["@element-plus/nuxt"],
+  pinia: {
+    autoImports: ["defineStore", "storeToRefs"],
+    storesDirs: ["./stores/**"],
+  },
   components: [
     {
       path: "~/components/",
@@ -32,7 +39,17 @@ export default defineNuxtConfig({
   ],
   vite: {
     css: {
-      preprocessorOptions: {},
+      preprocessorOptions: {
+        sass: {
+          additionalData: '@import "~/public/styles/_default.sass"',
+        },
+      },
+    },
+    ssr: {
+      noExternal: ["vuetify"],
+    },
+    define: {
+      "process.env.DEBUG": false,
     },
   },
   vueCompilerOptions: {
@@ -40,6 +57,11 @@ export default defineNuxtConfig({
   },
   extends: "./.nuxt/tsconfig.json",
   include: ["env.d.ts", ".nuxt/nuxt.d.ts", "**/*"],
-  css: ["~/public/styles/main.scss"],
+  css: ["~/assets/main.scss"],
   buildModules: ["@pinia/nuxt"],
+  hooks: {
+    "vite:extendConfig": (config) => {
+      config.plugins!.push(vuetify());
+    },
+  },
 });

@@ -3,6 +3,7 @@ import { defineEventHandler } from "h3";
 
 export default defineEventHandler(async (e) => {
   const conn = await dbConnection;
+
   try {
     const [rows, fields] = await conn.execute(selectLatestRecord);
     return JSON.stringify(rows);
@@ -13,8 +14,8 @@ export default defineEventHandler(async (e) => {
 });
 
 const selectLatestRecord = `
-  SELECT * FROM matchinfo_test
+  SELECT * FROM matches
   ORDER BY id
   DESC
-  LIMIT 5;
+  LIMIT 100;
 `;

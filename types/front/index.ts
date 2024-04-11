@@ -1,8 +1,16 @@
 export interface searchQuery {
-  matchName: string;
-  teamName: string;
-  playerName: string;
+  match_name: string;
+  team_name: string;
+  player_name: string;
   auction: string;
+  hands: string;
+}
+
+export interface handKeyword {
+  spades: string;
+  hearts: string;
+  diamonds: string;
+  clubs: string;
   hands: string;
 }
 
@@ -12,10 +20,14 @@ export type matchRecord = {
   name: string;
   round: string;
   players: string;
-  startBoarrd: string;
-  lastBoarrd: string;
+  startBoard: string;
+  lastBoard: string;
   teamOpen: string;
   teamOpenImp: string;
   teamClose: string;
   teamCloseImp: string;
+};
+
+export type imgOptions = {
+  rotate?: number;
 };
