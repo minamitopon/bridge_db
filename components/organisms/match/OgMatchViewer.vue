@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { BoardInfoModel } from "../../../model/BoardInfoModel";
 import { HandModel } from "../../../model/HandModel";
 
 interface Props {
+  board: BoardInfoModel;
   hand: HandModel;
 }
 /** defines */
@@ -10,11 +12,15 @@ const props = defineProps<Props>();
 
 <template lang="pug">
 .match-viewer
-  template(v-if="hand")
+  template(v-if="hand && board")
     mc-match-hand(
       v-for="(hand, index) in hand.allHand"
       :hand="hand"
       :class="`match-viewer-hand__${index}`"
+    )
+    mc-match-board-info(
+      :boardNum="board.boardNumber"
+      :contract="board.contract"
     )
 </template>
 

@@ -7,7 +7,7 @@ interface Props {
   boards: BoardInfo[];
 }
 interface Emits {
-  (e: "clickRow", boardNum): void;
+  (e: "clickRow", board): void;
 }
 
 /** defines */
@@ -27,7 +27,7 @@ const closedRoomResults = computed(() => {
   return allBoards.value.filter((board) => board.room === "Closed Room");
 });
 
-const clickRow = (boardNum) => emits("clickRow", boardNum);
+const clickRow = (board) => emits("clickRow", board);
 </script>
 
 <template lang="pug">
@@ -40,7 +40,7 @@ const clickRow = (boardNum) => emits("clickRow", boardNum);
             th(v-for="column in tableHeaders" :key="column")
               | {{ column }}
         tbody
-          tr(v-for="result in openRoomResults" :key="result.boardNumber" @click="clickRow(result.boardNumber)")
+          tr(v-for="result in openRoomResults" :key="result.boardNumber" @click="clickRow(result)")
             td {{ result.boardNumber }}
             td {{ result.contract }}
             td {{ result.declare }}
@@ -53,7 +53,7 @@ const clickRow = (boardNum) => emits("clickRow", boardNum);
             th(v-for="column in tableHeaders" :key="column")
               | {{ column }}
         tbody
-          tr(v-for="result in closedRoomResults" :key="result.boardNumber" @click="clickRow(result.boardNumber)")
+          tr(v-for="result in closedRoomResults" :key="result.boardNumber" @click="clickRow(result)")
             td {{ result.boardNumber }}
             td {{ result.contract }}
             td {{ result.declare }}

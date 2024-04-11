@@ -5,6 +5,8 @@ import { useBoardInfoStore } from "../../stores/boardinfo/";
 import { useHandStore } from "../../stores/hand/";
 import { BoardInfoModel } from "../../model/BoardInfoModel";
 import { HandModel } from "../../model/HandModel";
+import { type BoardInfo } from "../../types/backend";
+
 /** store */
 const boardInfoStore = useBoardInfoStore(pinia());
 const handStore = useHandStore(pinia());
@@ -17,30 +19,33 @@ const route = useRoute();
 const uuid = ref(route.params.uuid);
 const boardsInfo: Ref<BoardInfoModel[]> = ref([]);
 const hands: Ref<HandModel[]> = ref([]);
-const selectedBoard: Ref<HandModel> = ref(hands.value[0]);
+const selectedBoard: Ref<BoardInfoModel> = ref(boardsInfo.value[0]);
+const handOfSelectedBoard: Ref<HandModel> = ref(hands.value[0]);
+
 const handleBack = () => {
   /* NOP */
 };
-const handleClick = (num) => {
-  selectedBoard.value =
+const handleClick = (board) => {
+  selectedBoard.value = board;
+  handOfSelectedBoard.value =
     (hands.value.find((hand) => {
-      hand.boardNum === num;
-    }) as HandModel) ?? hands.value[Number(num) * 2 - 1];
+      hand.boardNum === board.boardNumber;
+    }) as HandModel) ?? hands.value[Number(board.boardNumber) * 2 - 1];
 };
 
-const vugraphData = computed(() => {
-  return;
-});
 onMounted(async () => {
   await Promise.all([
     boardInfoStore.fetchByUuid(uuid.value),
     handStore.fetchByUuid(uuid.value),
   ]);
-  boardsInfo.value = boardInfoStore.findByUuid(uuid.value);
+  boardsInfo.value = await boardInfoStore.findByUuid(uuid.value);
   hands.value = handStore
     .findByUuid(uuid.value)
     .map((hand) => new HandModel(hand));
-  selectedBoard.value = hands.value[0];
+  selectedBoard.value = new BoardInfoModel(
+    boardsInfo.value[0] as unknown as BoardInfo
+  );
+  handOfSelectedBoard.value = hands.value[0];
 });
 </script>
 
@@ -52,13 +57,14 @@ onMounted(async () => {
     .match-main-results-table
       mc-match-results-table(:boards="boardsInfo" @clickRow="handleClick")
     .match-main-viewer
-      og-match-viewer(:hand="selectedBoard")
+      og-match-viewer(:hand="handOfSelectedBoard" :board="selectedBoard")
 </template>
 
 <style lang="sass">
-.match-main
-  max-width: 800px
-  margin: auto
-  .match-main-results-table
-    margin-bottom: 16px
+.match
+  .match-main
+    width: 800px
+    margin: auto
+    .match-main-results-table
+      margin-bottom: 16px
 </style>
