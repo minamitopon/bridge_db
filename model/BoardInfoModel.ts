@@ -22,15 +22,6 @@ export class BoardInfoModel {
 
   get auction() {
     const parseAuction = this.boardInfo.auction
-      .replace(/[\|mb\||\|pg\|]/g, "")
-      .replace("PPP", "")
-      .match(/[1-7][C|D|H|S|NT]/g);
-
-    return parseAuction;
-  }
-
-  get fullAuction() {
-    const parseAuction = this.boardInfo.auction
       .replace(/(\|mb\|)|(\|pg\|)/g, "")
       .replace("ppp", "")
       .match(/[1-7][C|D|H|S|NT]|[drp]/g);
@@ -39,25 +30,24 @@ export class BoardInfoModel {
 
   get contract() {
     let contract;
-    switch (this.fullAuction?.pop()) {
+    switch (this.auction?.pop()) {
       case "p":
         contract = "PO";
         break;
       case "d":
         contract =
-          this.fullAuction
-            ?.reverse()
-            .find((call) => call !== "d" && call !== "p") + "x";
+          this.auction?.reverse().find((call) => call !== "d" && call !== "p") +
+          "x";
         break;
       case "r":
         contract =
-          this.fullAuction
+          this.auction
             ?.reverse()
             .find((call) => call !== "r" && call !== "d" && call !== "p") +
           "xx";
         break;
       default:
-        contract = this.fullAuction?.pop();
+        contract = this.auction?.pop();
     }
     return contract;
   }
@@ -119,8 +109,13 @@ export class BoardInfoModel {
     else return "NV";
   }
 
+  get dealer(): string {
+    const seat = ["w", "n", "e", "s"];
+    return seat[this.boardNumber % 4];
+  }
+
   get declare(): string {
-    return this.findDeclare(this.fullAuction, this.boardNumber);
+    return this.findDeclare(this.auction, this.boardNumber);
   }
 
   unitedResult(tricks) {

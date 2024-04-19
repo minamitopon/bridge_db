@@ -65,7 +65,9 @@ const clickRow = (board) => emits("clickRow", board);
 .match-results-table
   .match-results-table__table
     max-height: 200px
-    overflow-y: scroll
-    &::-webkit-scrollbar
-      display: none
+    .v-table__wrapper
+      -ms-overflow-style: none
+      scrollbar-width: none
+      &::-webkit-scrollbar
+        dispaly: none
 </style>
