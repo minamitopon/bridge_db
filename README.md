@@ -1,42 +1,26 @@
-# Nuxt 3 Minimal Starter
+# Bridge Database
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+[BBO](https://www.bridgebase.com/) で提供されているビューグラフのデータを元にして、検索機能を持たせたもの。
+オリジナルのページでは試合名、プレイヤー名及び開催日での検索にしか対応していないが、本プロジェクトでは試合名、プレイヤー名、ハンド、オークションでの検索に対応させている。
 
-## Setup
+## 構成
 
-Make sure to install the dependencies:
+### フロントエンド
 
-```bash
-# yarn
-yarn install
+Vue3 + Nuxt3 で構成。
+使用技術は、TypeScript, Pug, Sass。
 
-# npm
-npm install
+### バックエンド
 
-# pnpm
-pnpm install
-```
+Nuxt3 の server ディレクトリで実装。
+主に TypeScript を使用。
 
-## Development Server
+### データベース
 
-Start the development server on http://localhost:3000
+Docker 上に MySQL サーバーを立てて運用。
 
-```bash
-npm run dev
-```
+### その他
 
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+ダウンロードした lin ファイルをデータベースへ入れる際の処理は、別ディレクトリで管理。
+JavaScript ベースの実装を Gulp で動かしている。
+最終的には、GCP に移してバッチ処理を走らせたい。
