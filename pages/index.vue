@@ -81,8 +81,8 @@ watch(
 );
 
 /** methods */
-const handleClick = (uuid) => {
-  console.log(uuid);
+const handleClick = async (uuid) => {
+  await navigateTo(`/match/${uuid}`);
 };
 const handleSimpleSearch = async (keyword) => {
   const { data: result } = await useFetch("/api/sql/search/simple-search", {
