@@ -22,9 +22,10 @@ export class BoardInfoModel {
 
   get auction() {
     const parseAuction = this.boardInfo.auction
+      .replace("P", "p")
       .replace(/(\|mb\|)|(\|pg\|)/g, "")
-      .replace("ppp", "")
-      .match(/[1-7][C|D|H|S|NT]|[drp]/g);
+      .replace(/(ppp$)|(PPP$)/, "")
+      .match(/[1-7][C|D|H|S|NT]|[drp]/gi);
     return parseAuction || [];
   }
 
@@ -49,7 +50,7 @@ export class BoardInfoModel {
       default:
         contract = this.auction?.pop();
     }
-    return contract;
+    return this.replaceContractToUpperCase(contract);
   }
 
   get doubled() {
@@ -216,5 +217,14 @@ export class BoardInfoModel {
     const orderOfCall = side.slice(boardNum % 4, (boardNum % 4) + 4);
 
     return orderOfCall[firstCallerId];
+  }
+
+  replaceContractToUpperCase(contract) {
+    return contract
+      .replace("c", "C")
+      .replace("d", "D")
+      .replace("h", "H")
+      .replace("s", "S")
+      .replace("nt", "NT");
   }
 }

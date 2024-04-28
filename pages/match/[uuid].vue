@@ -22,8 +22,8 @@ const hands: Ref<HandModel[]> = ref([]);
 const selectedBoard: Ref<BoardInfoModel> = ref(boardsInfo.value[0]);
 const handOfSelectedBoard: Ref<HandModel> = ref(hands.value[0]);
 
-const handleBack = () => {
-  /* NOP */
+const handleBack = async () => {
+  await navigateTo("/");
 };
 const handleClick = (board) => {
   selectedBoard.value = board;

@@ -10,17 +10,17 @@ const props = defineProps<Props>();
 
 const srcOfSymbol = computed(() => {
   let path;
-  switch (props.call[1]) {
-    case "C":
+  switch (true) {
+    case /c/i.test(props.call[1]):
       path = `/images/atom/${Suit.CLUB}.svg`;
       break;
-    case "D":
+    case /d/i.test(props.call[1]):
       path = `/images/atom/${Suit.DIAMOND}.svg`;
       break;
-    case "H":
+    case /h/i.test(props.call[1]):
       path = `/images/atom/${Suit.HEART}.svg`;
       break;
-    case "S":
+    case /s/i.test(props.call[1]):
       path = `/images/atom/${Suit.SPADE}.svg`;
       break;
     default:
