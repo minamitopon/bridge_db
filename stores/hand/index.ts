@@ -19,6 +19,7 @@ export const useHandStore = defineStore("hand", {
         const json = await res.json();
         json.map((j) => new HandModel(j));
         this.data.push(...json);
+        this.cache.push(uuid);
       } catch (e) {
         throw new Error(e);
       }

@@ -22,7 +22,7 @@ export class BoardInfoModel {
 
   get auction() {
     const parseAuction = this.boardInfo.auction
-      .replace("P", "p")
+      .replace(/P/g, "p")
       .replace(/(\|mb\|)|(\|pg\|)/g, "")
       .replace(/(ppp$)|(PPP$)/, "")
       .match(/[1-7][C|D|H|S|NT]|[drp]/gi);
@@ -206,13 +206,17 @@ export class BoardInfoModel {
     if (this.contract === "PO") return "PO";
     const contract = this.contract.replace(/x|r/, "");
     const lastTrump = contract[1];
-    const lastCallerId = auction.indexOf(contract) % 4;
+    const lastCallerId =
+      auction.indexOf(this.replaceContractToLowerCase(contract)) % 4;
     const firstCallerId =
       auction.findIndex((call, index) => {
         const trump = call[1];
-        return trump === lastTrump && index % 2 === lastCallerId % 2;
+        return (
+          this.replaceContractToUpperCase(trump) ===
+            this.replaceContractToUpperCase(lastTrump) &&
+          index % 2 === lastCallerId % 2
+        );
       }) % 4;
-
     const side = ["W", "N", "E", "S", "W", "N", "E", "S"];
     const orderOfCall = side.slice(boardNum % 4, (boardNum % 4) + 4);
 
@@ -221,10 +225,23 @@ export class BoardInfoModel {
 
   replaceContractToUpperCase(contract) {
     return contract
-      .replace("c", "C")
-      .replace("d", "D")
-      .replace("h", "H")
-      .replace("s", "S")
-      .replace("nt", "NT");
+      ? contract
+          .replace("c", "C")
+          .replace("d", "D")
+          .replace("h", "H")
+          .replace("s", "S")
+          .replace("nt", "NT")
+      : "";
+  }
+
+  replaceContractToLowerCase(contract) {
+    return contract
+      ? contract
+          .replace("C", "c")
+          .replace("D", "d")
+          .replace("H", "h")
+          .replace("S", "s")
+          .replace("NT", "nt")
+      : "";
   }
 }
