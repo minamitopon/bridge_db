@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { type BoardInfo } from "../../types/backend";
 import { BoardInfoModel } from "../../model/BoardInfoModel";
 
 export const useBoardInfoStore = defineStore("boardInfo", {
@@ -20,6 +19,7 @@ export const useBoardInfoStore = defineStore("boardInfo", {
         const json = await res.json();
         json.map((j) => new BoardInfoModel(j));
         this.data.push(...json);
+        this.cache.push(uuid);
       } catch (e) {
         throw new Error(e);
       }
