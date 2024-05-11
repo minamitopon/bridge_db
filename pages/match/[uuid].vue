@@ -52,7 +52,7 @@ onMounted(async () => {
 <template lang="pug">
 .match
   .match-header
-    mc-common-page-header(title="test" @back="handleBack")
+    mc-common-page-header(title="Match Detail" @back="handleBack")
   .match-main
     .match-main-results-table
       mc-match-results-table(:boards="boardsInfo" @clickRow="handleClick")

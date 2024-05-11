@@ -21,6 +21,7 @@ export class BoardInfoModel {
   }
 
   get auction() {
+    if (this.isUndefined(this.boardInfo.auction)) return [];
     const parseAuction = this.boardInfo.auction
       .replace(/P/g, "p")
       .replace(/(\|mb\|)|(\|pg\|)/g, "")
@@ -30,6 +31,7 @@ export class BoardInfoModel {
   }
 
   get contract() {
+    if (this.isUndefined(this.boardInfo.auction)) return "Error";
     let contract;
     switch (this.auction?.pop()) {
       case "p":
@@ -66,7 +68,8 @@ export class BoardInfoModel {
   }
 
   get totalTricks() {
-    return this.boardInfo.tricks === "undifined"
+    if (this.isUndefined(this.boardInfo.auction)) return null;
+    return this.isUndefined(this.boardInfo.tricks)
       ? null
       : toNumber(this.boardInfo.tricks);
   }
@@ -78,7 +81,8 @@ export class BoardInfoModel {
       : null;
   }
 
-  get score(): number {
+  get score(): number | null {
+    if (this.isUndefined(this.boardInfo.tricks)) return null;
     return this.calcScore(this.contract, this.vulnerable);
   }
 
@@ -117,6 +121,10 @@ export class BoardInfoModel {
 
   get declare(): string {
     return this.findDeclare(this.auction, this.boardNumber);
+  }
+
+  isUndefined(data) {
+    return data === "undefined";
   }
 
   unitedResult(tricks) {
@@ -206,16 +214,16 @@ export class BoardInfoModel {
     if (this.contract === "PO") return "PO";
     const contract = this.contract.replace(/x|r/, "");
     const lastTrump = contract[1];
-    const lastCallerId =
-      auction.indexOf(this.replaceContractToLowerCase(contract)) % 4;
+    const lastCallerId = Math.max(
+      auction.indexOf(this.replaceContractToLowerCase(contract)) % 4,
+      auction.indexOf(this.replaceContractToUpperCase(contract)) % 4
+    );
+
     const firstCallerId =
       auction.findIndex((call, index) => {
         const trump = call[1];
-        return (
-          this.replaceContractToUpperCase(trump) ===
-            this.replaceContractToUpperCase(lastTrump) &&
-          index % 2 === lastCallerId % 2
-        );
+        const reg = new RegExp(trump, "gi");
+        return reg.test(lastTrump) && index % 2 === lastCallerId % 2;
       }) % 4;
     const side = ["W", "N", "E", "S", "W", "N", "E", "S"];
     const orderOfCall = side.slice(boardNum % 4, (boardNum % 4) + 4);
