@@ -8,3 +8,7 @@ export const snakeToPascal = (word) => {
     .map((l) => l.charAt(0).toUpperCase() + l.slice(1))
     .join();
 };
+
+export const isBetweenRange = (x, min, max) => {
+  return min <= x && x <= max;
+};
