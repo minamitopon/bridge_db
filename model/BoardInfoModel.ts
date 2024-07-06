@@ -1,5 +1,6 @@
 import { toNumber } from "lodash";
 import { type BoardInfo } from "../types/backend";
+import { resolveUnrefHeadInput } from "@unhead/vue";
 
 export class BoardInfoModel {
   boardInfo: BoardInfo;
@@ -24,9 +25,11 @@ export class BoardInfoModel {
     if (this.isUndefined(this.boardInfo.auction)) return [];
     const parseAuction = this.boardInfo.auction
       .replace(/P/g, "p")
+      .replace(/\|D\|/g, "|d|")
       .replace(/(\|mb\|)|(\|pg\|)/g, "")
       .replace(/(ppp$)|(PPP$)/, "")
       .match(/[1-7][C|D|H|S|NT]|[drp]/gi);
+
     return parseAuction || [];
   }
 
@@ -123,6 +126,10 @@ export class BoardInfoModel {
     return this.findDeclare(this.auction, this.boardNumber);
   }
 
+  get isNS(): boolean {
+    return this.declare === "N" || this.declare === "S";
+  }
+
   isUndefined(data) {
     return data === "undefined";
   }
@@ -141,8 +148,9 @@ export class BoardInfoModel {
     if (makeCount === null) return 0;
 
     // ダウンした時の点数
-    const downPenalty = isVul ? 100 : 50;
-    if (this.result < 0) return this.result * downPenalty;
+    if (this.result < 0) {
+      return this.calcDownPenalty(Math.abs(this.result), isVul) as number;
+    }
 
     // メイクした時の得点
     const gameBonus = isVul ? 450 : 250;
@@ -251,5 +259,16 @@ export class BoardInfoModel {
           .replace("S", "s")
           .replace("NT", "nt")
       : "";
+  }
+
+  calcDownPenalty(downCount, vul) {
+    let point = 0;
+    if (!this.doubled) {
+      point = vul ? downCount * 100 : downCount * 50;
+    }
+    if (this.doubled) {
+      point = vul ? 300 * downCount - 100 : 200 * downCount - 100;
+    }
+    return point;
   }
 }
