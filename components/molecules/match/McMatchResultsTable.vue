@@ -95,10 +95,10 @@ const calcImp = (index) => {
             td.match-results-table__table-cell {{ result.declare }}
             td.match-results-table__table-cell {{ result.result }}
             td.match-results-table__table-cell
-              template(v-if="result.score > 0") {{ result.score }}
+              template(v-if="(result.result > 0 && result.isNS) || (result.result < 0 && !result.isNS) || (result.result === '=' && result.isNS)") {{ result.score }}
               template(v-if="result.score === 0") {{ result.score }}
             td.match-results-table__table-cell
-              template(v-if="result.score < 0") {{ Math.abs(result.score) }}
+              template(v-if="(result.result >= 0 && !result.isNS) || (result.result < 0 && result.isNS) || (result.result === '=' && !result.isNS)") {{ Math.abs(result.score) }}
               template(v-if="result.score === 0") {{ result.score }}
             td.match-results-table__table-cell
               template(v-if="calcImp(result.boardNumber) > 0") {{ calcImp(result.boardNumber) }}
@@ -119,10 +119,10 @@ const calcImp = (index) => {
             td.match-results-table__table-cell {{ result.declare }}
             td.match-results-table__table-cell {{ result.result }}
             td.match-results-table__table-cell
-              template(v-if="result.score > 0") {{ result.score }}
+              template(v-if="(result.result > 0 && result.isNS) || (result.result < 0 && !result.isNS) || (result.result === '=' && result.isNS)") {{ result.score }}
               template(v-if="result.score === 0") {{ result.score }}
             td.match-results-table__table-cell
-              template(v-if="result.score < 0") {{ Math.abs(result.score) }}
+              template(v-if="(result.result >= 0 && !result.isNS) || (result.result < 0 && result.isNS) || (result.result === '=' && !result.isNS)") {{ Math.abs(result.score) }}
               template(v-if="result.score === 0") {{ result.score }}
             td.match-results-table__table-cell
               template(v-if="calcImp(result.boardNumber) > 0") {{ calcImp(result.boardNumber) }}
